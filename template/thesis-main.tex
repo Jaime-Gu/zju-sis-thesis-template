@@ -1,0 +1,121 @@
+\documentclass[12pt,a4paper,twoside,fontset=none]{ctexart}
+\usepackage{template/zju-thesis}
+\usepackage[colorlinks=false,pdfborder={0 0 0}]{hyperref}
+
+\renewcommand{\zjuTitleEs}{%%TITLE_ES%%}
+\renewcommand{\zjuTitleZh}{%%TITLE_ZH%%}
+\renewcommand{\zjuAuthor}{%%AUTHOR%%}
+\renewcommand{\zjuStudentId}{%%STUDENT_ID%%}
+\renewcommand{\zjuAdvisor}{%%ADVISOR%%}
+\renewcommand{\zjuGradeMajor}{%%GRADE_MAJOR%%}
+\renewcommand{\zjuCollege}{%%COLLEGE%%}
+\renewcommand{\zjuSubmitDate}{%%SUBMIT_DATE%%}
+\renewcommand{\zjuTaskDates}{%%TASK_DATES%%}
+\renewcommand{\zjuSecrecyMark}{%%SECRECY_MARK%%}
+\renewcommand{\zjuPublicMark}{%%PUBLIC_MARK%%}
+
+\begin{document}
+\pagenumbering{gobble}
+\pagestyle{empty}
+
+\zjuMainCover
+\zjuClearPage
+\zjuTotalContents
+\zjuClearPage
+\zjuPromise
+\zjuClearPage
+
+\pagenumbering{Roman}
+\setcounter{page}{1}
+\zjuFrontMattertrue
+\pagestyle{zju}
+\renewcommand{\zjuRunningTitle}{\zjuTitleZh}
+\zjuPartTitle{Agradecimientos}{acknowledgements}
+\input{build/acknowledgements.tex}
+
+\zjuPartTitle{Abstracto}{abstract-es}
+\input{build/abstract_es.tex}
+
+\zjuPartTitle{摘　要}{abstract-zh}
+\input{build/abstract_zh.tex}
+
+\zjuContents
+\zjuFrontClearPage
+\zjuFrontMatterfalse
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\pagestyle{zju}
+\renewcommand{\zjuRunningTitle}{\zjuTitleZh}
+\phantomsection
+\label{body}
+\setcounter{section}{0}
+\input{build/body.tex}
+
+\zjuPartTitle{Referencias bibliográficas}{references}
+\begin{zjureferences}
+\input{build/references.tex}
+\end{zjureferences}
+
+%%APPENDIX%%
+
+%%AUTHOR_SECTION%%
+
+\zjuClearPage
+\pagestyle{empty}
+\zjuTaskBook{\input{build/task.tex}}
+\zjuClearPage
+\zjuThesisAssessment
+\zjuClearPage
+\zjuReviewCover
+\zjuClearPage
+\zjuRequirements{\input{build/requirements.tex}}
+
+\zjuClearPage
+\pagestyle{zju}
+\renewcommand{\zjuRunningTitle}{文献综述}
+\phantomsection
+\label{review}
+\addcontentsline{toc}{section}{Revisión bibliográfica}
+\setcounter{section}{0}
+{\centering\bfseries\fontsize{16pt}{20pt}\selectfont Revisión bibliográfica\par}
+\vspace{12pt}
+\input{build/review.tex}
+
+\zjuClearPage
+\renewcommand{\zjuRunningTitle}{开题报告}
+\phantomsection
+\label{proposal}
+\addcontentsline{toc}{section}{Propuesta de investigación}
+\setcounter{section}{0}
+{\centering\bfseries\fontsize{16pt}{20pt}\selectfont Propuesta de investigación\par}
+\vspace{12pt}
+\input{build/proposal.tex}
+
+\zjuClearPage
+\renewcommand{\zjuRunningTitle}{外文翻译}
+\phantomsection
+\label{translation}
+\addcontentsline{toc}{section}{Traducción de la bibliografía}
+\setcounter{section}{0}
+{\centering\bfseries\fontsize{16pt}{20pt}\selectfont Traducción de la bibliografía\par}
+\vspace{12pt}
+\input{build/translation.tex}
+
+\zjuClearPage
+\renewcommand{\zjuRunningTitle}{外文原文}
+\phantomsection
+\label{original}
+\addcontentsline{toc}{section}{Texto de origen}
+\setcounter{section}{0}
+{\centering\bfseries\fontsize{16pt}{20pt}\selectfont Texto de origen\par}
+\vspace{12pt}
+%%ORIGINAL%%
+
+\zjuClearPage
+\pagestyle{empty}
+\zjuReviewAssessment
+\zjuClearPage
+\zjuSpine
+
+\end{document}
