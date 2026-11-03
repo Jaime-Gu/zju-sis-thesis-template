@@ -341,7 +341,8 @@ La variable $U$ representa ...
 - A4，上下边距 2.54 cm，左右约 3.17 cm；
 - 正文 12 磅，18 磅行距，首行缩进两个字符；
 - 西文 Times New Roman；
-- 中文依次选择 STFangsong、FangSong、FandolFang；
+- 中文正文依次选择 STFangsong、FangSong、FandolFang；页眉和封面密级行使用 9 磅宋体；
+- 承诺书标题 16 磅仿宋、正文 14 磅仿宋；参考文献 10.5 磅；考核表文字 12 磅宋体；文献综述封面大标题 26 磅黑体；
 - 标题、页眉、目录、图表、引用和固定表格样式；
 - 表题位于表格下方；
 - 前置部分罗马数字页码，正文阿拉伯数字页码；

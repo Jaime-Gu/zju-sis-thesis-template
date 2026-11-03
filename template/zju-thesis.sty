@@ -1,4 +1,4 @@
-\ProvidesPackage{zju-thesis}[2026/11/03 ZJU Spanish thesis Markdown template]
+\ProvidesPackage{zju-thesis}[2026/11/04 ZJU Spanish thesis Markdown template]
 
 \RequirePackage{fontspec}
 \RequirePackage{geometry}
@@ -149,8 +149,8 @@
 
 \fancypagestyle{zju}{
   \fancyhf{}
-  \fancyhead[L]{\fontsize{9pt}{12pt}\selectfont 浙江大学学士学位毕业论文}
-  \fancyhead[R]{\fontsize{9pt}{12pt}\selectfont\zjuRunningTitle}
+  \fancyhead[L]{\zjusong\fontsize{9pt}{12pt}\selectfont 浙江大学学士学位毕业论文}
+  \fancyhead[R]{\zjusong\fontsize{9pt}{12pt}\selectfont\zjuRunningTitle}
   \fancyfoot[L]{\ifodd\value{zjuPhysicalPage}\else\fontsize{9pt}{12pt}\selectfont\thepage\fi}
   \fancyfoot[R]{\ifodd\value{zjuPhysicalPage}\fontsize{9pt}{12pt}\selectfont\thepage\fi}
   \renewcommand{\headrulewidth}{0.5pt}
@@ -206,7 +206,7 @@
   {\endlist}
 
 \newenvironment{zjureferences}
-  {\begingroup\setlist[enumerate,1]{label={[\arabic{enumi}]},leftmargin=3em,labelsep=0.5em,itemsep=0pt,parsep=0pt,topsep=0pt}}
+  {\begingroup\zjusong\fontsize{10.5pt}{15.75pt}\selectfont\setlist[enumerate,1]{label={[\arabic{enumi}]},leftmargin=3em,labelsep=0.5em,itemsep=0pt,parsep=0pt,topsep=0pt}}
   {\endgroup}
 
 \newcommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
@@ -282,7 +282,7 @@
 
 \newcommand{\zjuMainCover}{
   \thispagestyle{empty}
-  \noindent{\bfseries 涉密论文 \zjuSecrecyMark\quad 公开论文 \zjuPublicMark}\par
+  \noindent{\zjusong\bfseries\fontsize{9pt}{12pt}\selectfont 涉密论文 \zjuSecrecyMark\quad 公开论文 \zjuPublicMark}\par
   \vspace{1.2cm}
   \begin{center}
     \includegraphics[width=10.795cm]{template/assets/zju-wordmark.png}\par
@@ -310,14 +310,14 @@
 
 \newcommand{\zjuReviewCover}{
   \thispagestyle{empty}
-  \noindent{\bfseries 涉密论文 \zjuSecrecyMark\quad 公开论文 \zjuPublicMark}\par
+  \noindent{\zjusong\bfseries\fontsize{9pt}{12pt}\selectfont 涉密论文 \zjuSecrecyMark\quad 公开论文 \zjuPublicMark}\par
   \vspace{1.1cm}
   \begin{center}
     \includegraphics[width=10.795cm]{template/assets/zju-wordmark.png}\par
     \vspace{0.35cm}
-    {\zjuhei\bfseries\fontsize{24pt}{30pt}\selectfont 本科生毕业论文（设计）\par}
+    {\zjuhei\bfseries\fontsize{26pt}{32pt}\selectfont 本科生毕业论文（设计）\par}
     \vspace{0.2cm}
-    {\zjuhei\bfseries\fontsize{24pt}{30pt}\selectfont 文献综述和开题报告\par}
+    {\zjuhei\bfseries\fontsize{26pt}{32pt}\selectfont 文献综述和开题报告\par}
     \vspace{0.45cm}
     \includegraphics[width=3cm]{template/assets/zju-seal.png}\par
   \end{center}
@@ -358,9 +358,10 @@
 \newcommand{\zjuPromise}{
   \thispagestyle{empty}
   \begin{center}
-    {\zjuhei\bfseries\fontsize{18pt}{26pt}\selectfont 浙江大学本科生毕业论文（设计）承诺书\par}
+    {\bfseries\fontsize{16pt}{22pt}\selectfont 浙江大学本科生毕业论文（设计）承诺书\par}
   \end{center}
   \vspace{0.5cm}
+  \fontsize{14pt}{21pt}\selectfont
   \begin{enumerate}[label=\arabic*.,leftmargin=2.5em,itemsep=6pt]
     \item 本人郑重地承诺所呈交的毕业论文（设计），是在指导教师的指导下严格按照学校和学院有关规定完成的。
     \item 本人在毕业论文（设计）中除了文中特别加以标注和致谢的地方外，论文中不包含其他人已经发表或撰写过的研究成果，也不包含为获得浙江大学或其他教育机构的学位或证书而使用过的材料。
@@ -373,6 +374,7 @@
   \noindent 作者签名：\underline{\hspace{4cm}}\hfill 导师签名：\underline{\hspace{4cm}}\par
   \vspace{0.8cm}
   \noindent 签字日期：\quad 年\quad 月\quad 日\hfill 签字日期：\quad 年\quad 月\quad 日\par
+  \normalsize
   \clearpage
 }
 
@@ -426,7 +428,7 @@
   \begin{center}
   \renewcommand{\arraystretch}{1.5}
   \setlength{\tabcolsep}{3pt}
-  \fontsize{10.5pt}{14pt}\selectfont
+  \zjusong\fontsize{12pt}{16pt}\selectfont
   \begin{tabular}{|c|c|c|c|c|c|}
     \hline
     成绩比例 & 文献综述 & 开题报告 & 外文翻译 & \shortstack{毕业论文（设计）\\质量及答辩} & 总评成绩 \\
