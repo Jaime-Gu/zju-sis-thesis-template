@@ -95,6 +95,8 @@ def parse_content():
     missing = [label for label in SECTIONS if label not in seen]
     if missing:
         raise BuildError("论文.md 缺少分区标记：" + "、".join(f"【{label}】" for label in missing))
+    if seen != list(SECTIONS):
+        raise BuildError("论文.md 的分区顺序不正确。正确顺序为：" + " → ".join(f"【{label}】" for label in SECTIONS))
     return sections
 
 
@@ -114,7 +116,11 @@ def latex_escape(value):
     return "".join(replacements.get(char, char) for char in value)
 
 
-def run_command(command, cwd=ROOT):
+def latex_raw_block(content):
+    return "```{=latex}\n" + content + "\n```"
+
+
+def run_command(command, cwd=ROOT, log_path=None):
     result = subprocess.run(
         command,
         cwd=cwd,
@@ -124,9 +130,19 @@ def run_command(command, cwd=ROOT):
         encoding="utf-8",
         errors="replace",
     )
+    if log_path is not None:
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        log_path.write_text(result.stdout, encoding="utf-8")
     if result.returncode != 0:
         tail = "\n".join(result.stdout.splitlines()[-50:])
-        raise BuildError(f"命令执行失败：{' '.join(map(str, command))}\n{tail}")
+        message = f"命令执行失败：{' '.join(map(str, command))}\n{tail}"
+        if log_path is not None:
+            try:
+                display_path = log_path.relative_to(ROOT)
+            except ValueError:
+                display_path = log_path
+            message += f"\n完整日志：{display_path}"
+        raise BuildError(message)
     return result.stdout
 
 
@@ -135,14 +151,17 @@ def preprocess_markdown(text, section):
     for raw_line in text.splitlines():
         stripped = raw_line.strip()
         if stripped.startswith("Tabla:"):
-            lines.append("\\zjuTableCaption{" + stripped[len("Tabla:"):].strip() + "}")
+            value = latex_escape(stripped[len("Tabla:"):].strip())
+            lines.append(latex_raw_block("\\zjuTableCaption{" + value + "}"))
         elif stripped.startswith("Fuente:"):
-            lines.append("\\zjuSource{" + stripped[len("Fuente:"):].strip() + "}")
+            value = latex_escape(stripped[len("Fuente:"):].strip())
+            lines.append(latex_raw_block("\\zjuSource{" + value + "}"))
         elif stripped.startswith("Palabras clave:"):
-            lines.append("\\noindent\\textbf{Palabras clave:}" + stripped[len("Palabras clave:"):])
+            value = latex_escape(stripped[len("Palabras clave:"):].strip())
+            lines.append(latex_raw_block("\\noindent\\textbf{Palabras clave:} " + value))
         elif stripped.startswith("关键词：") or stripped.startswith("关键词:"):
             value = re.sub(r"^关键词[：:]", "", stripped)
-            lines.append("\\noindent\\textbf{关键词：}" + value)
+            lines.append(latex_raw_block("\\noindent\\textbf{关键词：}" + latex_escape(value)))
         else:
             lines.append(raw_line)
     text = "\n".join(lines)
@@ -200,7 +219,28 @@ def pandoc_fragment(text, section):
     if result.returncode != 0:
         raise BuildError(f"Pandoc 无法转换“{section}”部分：\n{result.stderr}")
     latex = postprocess_latex(result.stdout)
-    latex = re.sub(r"\\label\{([^}]+)\}", lambda match: rf"\label{{{section}-{match.group(1)}}}", latex)
+
+    def prefixed_target(target):
+        if any(target.startswith(f"{name}-") for name in SECTIONS.values()):
+            return target
+        return f"{section}-{target}"
+
+    latex = re.sub(
+        r"\\label\{([^}]+)\}",
+        lambda match: "\\label{" + prefixed_target(match.group(1)) + "}",
+        latex,
+    )
+    latex = re.sub(
+        r"\\hyperref\[([^\]]+)\]",
+        lambda match: "\\hyperref[" + prefixed_target(match.group(1)) + "]",
+        latex,
+    )
+    for macro in ("ref", "autoref", "pageref", "eqref"):
+        latex = re.sub(
+            rf"\\{macro}\{{([^}}]+)\}}",
+            lambda match: "\\" + macro + "{" + prefixed_target(match.group(1)) + "}",
+            latex,
+        )
     if section == "references":
         latex = latex.replace(r"\def\labelenumi{\arabic{enumi}.}", r"\def\labelenumi{[\arabic{enumi}]}")
     return latex
@@ -214,8 +254,29 @@ def check_dependencies():
     if missing:
         raise BuildError(
             "缺少排版程序：" + "、".join(missing) +
-            "。请按照 README.md 安装 Pandoc 和 TeX 环境；安装后关闭并重新打开生成窗口。"
+            "。请按照 使用说明.md 安装 Pandoc 和 TeX 环境；安装后关闭并重新打开生成窗口。"
         )
+
+
+def check_template_environment():
+    BUILD.mkdir(exist_ok=True)
+    check_file = BUILD / "environment-check.tex"
+    check_file.write_text(
+        "\\documentclass[12pt,a4paper,fontset=none]{ctexart}\n"
+        "\\usepackage{template/zju-thesis}\n"
+        "\\usepackage{hyperref}\n"
+        "\\begin{document}\nEnvironment check\n"
+        "\\end{document}\n",
+        encoding="utf-8",
+    )
+    run_command([
+        "xelatex",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "-file-line-error",
+        "-output-directory=build",
+        "build/environment-check.tex",
+    ], log_path=BUILD / "environment-check.txt")
 
 
 def build(check_only=False):
@@ -223,13 +284,25 @@ def build(check_only=False):
     if check_only:
         print("Pandoc：", run_command(["pandoc", "--version"]).splitlines()[0])
         print("XeLaTeX：", run_command(["xelatex", "--version"]).splitlines()[0])
-        print("环境检查通过。")
+        check_template_environment()
+        print("基础程序、TeX 宏包和字体检查通过。请继续执行一次完整示例构建。")
         return
+
+    OUTPUT.mkdir(exist_ok=True)
+    final_pdf = OUTPUT / "毕业论文.pdf"
+    previous_pdf = OUTPUT / "毕业论文.previous.pdf"
+    if previous_pdf.exists():
+        previous_pdf.unlink()
+    if final_pdf.exists():
+        final_pdf.replace(previous_pdf)
 
     info = parse_info()
     sections = parse_content()
     BUILD.mkdir(exist_ok=True)
-    OUTPUT.mkdir(exist_ok=True)
+    auxiliary_files = [BUILD / f"thesis.{suffix}" for suffix in ("aux", "toc", "out", "log", "pdf", "lof", "lot")]
+    for stale_file in list(BUILD.glob("xelatex-pass-*.txt")) + auxiliary_files:
+        if stale_file.exists():
+            stale_file.unlink()
 
     print("1/4 正在转换 Markdown……")
     for section in SECTIONS.values():
@@ -237,15 +310,15 @@ def build(check_only=False):
 
     appendix = ""
     if sections["appendix"].strip():
-        appendix = "\\zjuPartTitle{Apéndice}{appendix}\n\\input{build/appendix.tex}"
+        appendix = "\\zjuUnnumberedPartTitle{Apéndice}{appendix}\n\\input{build/appendix.tex}"
     author = ""
     if sections["author"].strip():
-        author = "\\zjuPartTitle{Breve resumen del autor}{author}\n\\input{build/author.tex}"
+        author = "\\zjuUnnumberedPartTitle{Breve resumen del autor}{author}\n\\input{build/author.tex}"
     original_pdf = ROOT / "外文原文.pdf"
     if original_pdf.exists():
         original = "\\clearpage\\includepdf[pages=-,pagecommand={\\thispagestyle{empty}}]{外文原文.pdf}"
     else:
-        original = "\\input{build/original.tex}"
+        original = "\\zjuSuppressNextSectionBreaktrue\n\\input{build/original.tex}"
 
     replacements = {token: latex_escape(info[key]) for key, token in INFO_KEYS.items()}
     replacements.update({
@@ -267,31 +340,38 @@ def build(check_only=False):
     for pass_number in range(1, 4):
         if pass_number > 1:
             print(f"{pass_number + 1}/4 正在更新目录、交叉引用和页码（第 {pass_number} 次）……")
-        log = run_command([
+        run_command([
             "xelatex",
             "-interaction=nonstopmode",
             "-halt-on-error",
             "-file-line-error",
             "-output-directory=build",
             "build/thesis.tex",
-        ])
-        (BUILD / f"xelatex-pass-{pass_number}.txt").write_text(log, encoding="utf-8")
+        ], log_path=BUILD / f"xelatex-pass-{pass_number}.txt")
 
     result_pdf = BUILD / "thesis.pdf"
     if not result_pdf.exists():
         raise BuildError("XeLaTeX 已结束，但没有生成 PDF。请查看 build/thesis.log。")
-    shutil.copy2(result_pdf, OUTPUT / "毕业论文.pdf")
+    shutil.copy2(result_pdf, final_pdf)
+    if previous_pdf.exists():
+        previous_pdf.unlink()
     print("生成完成：output/毕业论文.pdf")
 
 
 def main():
     parser = argparse.ArgumentParser(description="将论文.md 生成符合模板的 PDF")
-    parser.add_argument("--check", action="store_true", help="只检查 Pandoc 和 XeLaTeX 是否可用")
+    parser.add_argument("--check", action="store_true", help="检查程序、TeX 宏包和字体，并执行最小编译")
     args = parser.parse_args()
     try:
         build(check_only=args.check)
     except BuildError as error:
         print("\n生成失败：\n" + str(error), file=sys.stderr)
+        if (OUTPUT / "毕业论文.previous.pdf").exists():
+            print("上一份 PDF 保存在：output/毕业论文.previous.pdf", file=sys.stderr)
+        return 1
+    except OSError as error:
+        print("\n文件读写失败：" + str(error), file=sys.stderr)
+        print("请检查文件权限，并关闭正在占用 PDF 的阅读器。", file=sys.stderr)
         return 1
     return 0
 

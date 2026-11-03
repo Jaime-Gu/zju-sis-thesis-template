@@ -22,6 +22,7 @@
 \zjuClearPage
 \zjuTotalContents
 \zjuClearPage
+\zjuFixedTOCEntry{浙江大学本科生毕业论文（设计）承诺书}{promise}
 \zjuPromise
 \zjuClearPage
 
@@ -50,28 +51,36 @@
 \phantomsection
 \label{body}
 \setcounter{section}{0}
+\zjuMainBodySectionstrue
 \input{build/body.tex}
 
 \zjuPartTitle{Referencias bibliográficas}{references}
 \begin{zjureferences}
 \input{build/references.tex}
 \end{zjureferences}
+\zjuMainBodySectionsfalse
+
+\zjuClearPage
+\zjuFreezePageNumbers
 
 %%APPENDIX%%
 
 %%AUTHOR_SECTION%%
 
 \zjuClearPage
-\pagestyle{empty}
+\zjuFixedTOCEntry{本科生毕业论文（设计）任务书}{task}
 \zjuTaskBook{\input{build/task.tex}}
 \zjuClearPage
 \zjuThesisAssessment
 \zjuClearPage
+\zjuFixedTOCEntry{文献综述和开题报告}{proposal-cover}
 \zjuReviewCover
 \zjuClearPage
+\zjuFixedTOCEntry{指导教师对文献综述和开题报告的具体要求}{requirements}
 \zjuRequirements{\input{build/requirements.tex}}
 
 \zjuClearPage
+\zjuResumePageNumbers
 \pagestyle{zju}
 \renewcommand{\zjuRunningTitle}{文献综述}
 \phantomsection
@@ -80,6 +89,7 @@
 \setcounter{section}{0}
 {\centering\bfseries\fontsize{16pt}{20pt}\selectfont Revisión bibliográfica\par}
 \vspace{12pt}
+\zjuSuppressNextSectionBreaktrue
 \input{build/review.tex}
 
 \zjuClearPage
@@ -90,6 +100,7 @@
 \setcounter{section}{0}
 {\centering\bfseries\fontsize{16pt}{20pt}\selectfont Propuesta de investigación\par}
 \vspace{12pt}
+\zjuSuppressNextSectionBreaktrue
 \input{build/proposal.tex}
 
 \zjuClearPage
@@ -100,6 +111,7 @@
 \setcounter{section}{0}
 {\centering\bfseries\fontsize{16pt}{20pt}\selectfont Traducción de la bibliografía\par}
 \vspace{12pt}
+\zjuSuppressNextSectionBreaktrue
 \input{build/translation.tex}
 
 \zjuClearPage
@@ -113,7 +125,9 @@
 %%ORIGINAL%%
 
 \zjuClearPage
-\pagestyle{empty}
+\zjuFreezePageNumbers
+\zjuClearPage
+\zjuFixedTOCEntry{毕业论文（设计）文献综述和开题报告考核}{review-assessment}
 \zjuReviewAssessment
 \zjuClearPage
 \zjuSpine

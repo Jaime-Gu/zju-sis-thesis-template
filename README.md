@@ -4,7 +4,7 @@
 
 ## 1. 工作目录与结果
 
-项目根目录为 `zju-thesis-markdown/`。以下命令默认都在该目录执行。
+项目根目录为 `zju-sis-thesis-template/`。以下命令默认都在该目录执行。
 
 输入文件：
 
@@ -19,12 +19,14 @@
 output/毕业论文.pdf
 ```
 
+包内 PDF 是排版示例，正式使用前必须替换示例内容并重新生成。构建失败时，`output/毕业论文.pdf` 不会保留为旧版本；上一份 PDF 会保存在 `output/毕业论文.previous.pdf`，避免把旧文件误认为新构建结果。
+
 构建中间文件位于 `build/`。不要手动编辑 `build/`，每次构建都会重新生成其中的文件。
 
 ## 2. 文件结构
 
 ```text
-zju-thesis-markdown/
+zju-sis-thesis-template/
 ├── README.md                 Agent 操作手册
 ├── 使用说明.md               人工操作手册
 ├── 论文信息.md               必填字段
@@ -34,7 +36,8 @@ zju-thesis-markdown/
 ├── images/
 │   └── ejemplo.png           示例图片
 ├── scripts/
-│   └── build.py              构建脚本
+│   ├── build.py              构建脚本
+│   └── package.py            生成 UTF-8 文件名、无系统杂项的发布 ZIP
 ├── template/
 │   ├── thesis-main.tex       页面顺序及各部分装配
 │   ├── zju-thesis.sty        页面、字体、封面、目录、图表等格式
@@ -71,7 +74,9 @@ python3 scripts/build.py --check
 python scripts\build.py --check
 ```
 
-成功时输出 Pandoc 和 XeLaTeX 版本，最后显示“环境检查通过”。
+该命令先检查 Pandoc 和 XeLaTeX，再用真实模板执行一次最小编译，覆盖所需 TeX 宏包和中英文字体。成功时最后显示“基础程序、TeX 宏包和字体检查通过。请继续执行一次完整示例构建。”
+
+本机完整验证环境为 macOS arm64、Python 3.9.6、Pandoc 3.13、XeTeX 2026（TeX Live 2026）。Windows + MiKTeX 尚未完成实机验证，不应据此声明 Windows 已验证。
 
 如果缺少程序：
 
@@ -240,6 +245,18 @@ Cooper, R. L. A Framework for the Study of Language Spread[J]. Language Spread: 
 [^1]: 脚注说明。
 ```
 
+表题、来源和关键词中的 `&`、`%`、`#`、`_`、`{`、`}` 等普通文字会由脚本转义，不要自行添加反斜杠。
+
+内部链接使用 Markdown 锚点。脚本会同步重写标签和链接目标：
+
+```markdown
+# Introduction
+
+[跳转到本章](#introduction)
+```
+
+跨分区链接需要显式写出目标分区前缀，例如 `[查看文献综述标题](#review-introduction)`。常用前缀为 `body`、`review`、`proposal`、`translation`、`original`。
+
 ### 6.6 图片
 
 图片使用相对路径，放在 `images/` 中。图片单独占一个段落：
@@ -299,6 +316,15 @@ La variable $U$ representa ...
 
 不存在该文件时，排版【外文原文】中的 Markdown 内容。
 
+### 6.10 页码和目录规则
+
+- 附录、作者简介、任务书、毕业论文考核表、文献综述封面、教师要求和文献综述考核表不显示页眉页码，也不消耗阿拉伯页码。
+- 为保持正文一级标题位于奇数物理页而自动插入的空白页，仍按排版顺序计数。
+- 正文参考文献后的空白页计入正文末尾，文献综述从下一个阿拉伯数字继续编号。
+- 分部标题与第一个一级标题位于同一页；文献综述、开题报告、外文翻译和外文原文内的一级标题按正文流连续排版，不强制另起奇数页。
+- 主 `Índice de contenidos` 收录承诺书、任务书、文献综述封面、教师要求和文献综述考核表，这些固定插页条目不带页码；附录和作者简介条目也不带页码。
+- 附录和作者简介不显示页眉。
+
 ## 7. 修改模板
 
 页面顺序在 `template/thesis-main.tex`：
@@ -319,7 +345,7 @@ La variable $U$ representa ...
 - 标题、页眉、目录、图表、引用和固定表格样式；
 - 表题位于表格下方；
 - 前置部分罗马数字页码，正文阿拉伯数字页码；
-- 一级标题奇数页起页。
+- 正文一级标题奇数页起页，后续部分按正文流连续排版。
 
 只输出 PDF，不输出 DOCX。
 
@@ -346,19 +372,19 @@ dir output\毕业论文.pdf
 grep -E "LaTeX Error|undefined|multiply defined|Overfull|LaTeX Font Warning" build/thesis.log || true
 
 # Windows
-findstr /C:"LaTeX Error" /C:"undefined" /C:"multiply defined" /C:"Overfull" build\thesis.log
+findstr /C:"LaTeX Error" /C:"undefined" /C:"multiply defined" /C:"Overfull" /C:"LaTeX Font Warning" build\thesis.log
 ```
 
 需要进一步核对：
 
-1. PDF 能正常打开，页数大于 0。
+1. 构建命令返回 0，且本次生成的 `output/毕业论文.pdf` 能正常打开；不要只根据旧文件是否存在判断成功。
 2. 封面字段没有示例残留。
-3. 总目录和正文目录页码正确。
+3. 总目录和正文目录页码正确，固定插页条目不显示页码。
 4. 前置页码连续，正文从 1 开始。
-5. 一级标题位于奇数物理页。
-6. 页眉随正文、文献综述、开题报告、外文翻译和外文原文切换。
-7. 图、表和公式编号正确。
-8. 固定表格和签名页没有被正文挤出额外页面。
+5. 正文一级标题位于奇数物理页，分部标题与第一个一级标题同页，后续部分没有强制空白页。
+6. 附录和作者简介没有页眉页码；固定插页不消耗阿拉伯页码。
+7. 文献综述的页码接续正文末尾，开题报告、外文翻译和外文原文继续连续编号。
+8. 图、表和公式编号正确，内部链接指向正确标题。
 9. 如果存在 `外文原文.pdf`，附件页数、顺序和方向正确。
 10. 书脊题目和姓名正确。
 
@@ -407,12 +433,27 @@ findstr /C:"LaTeX Error" /C:"undefined" /C:"multiply defined" /C:"Overfull" buil
 依次检查：
 
 1. 构建命令的标准输出和错误输出；
-2. `build/xelatex-pass-1.txt`；
-3. `build/thesis.log` 中第一个以 `!` 开头的错误。
+2. 对应失败轮次的 `build/xelatex-pass-N.txt`；成功和失败都会保存该轮完整输出，旧日志会在构建开始时清理；
+3. `build/thesis.log` 中第一个以 `!` 开头的错误；
+4. 如果是依赖最小编译失败，查看 `build/environment-check.txt`。
 
 修复第一个实质性错误后再构建，不要连续重复同一失败命令。
 
-## 10. Agent 执行清单
+## 10. 发布打包
+
+在项目根目录执行：
+
+```bash
+python3 scripts/package.py
+```
+
+Windows 使用 `python scripts\package.py`。
+
+脚本在项目同级目录生成 `zju-sis-thesis-template.zip`。ZIP 内根目录同样为 `zju-sis-thesis-template/`。打包使用 Python `zipfile`，中文文件名带 UTF-8 标志，并排除 `.git/`、`build/`、`__pycache__/`、`.DS_Store`、`__MACOSX/` 和失败构建留下的备份 PDF。
+
+打包后检查 ZIP CRC、文件清单和中文文件名，不要用 Finder 或其他工具再次压缩该目录，以免重新引入编码和系统杂项问题。
+
+## 11. Agent 执行清单
 
 1. 定位项目根目录。
 2. 阅读现有输入，保留用户已填写内容。

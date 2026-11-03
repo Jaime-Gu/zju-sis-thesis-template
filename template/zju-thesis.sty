@@ -100,7 +100,17 @@
 
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{2}
-\newcommand{\sectionbreak}{\cleardoublepage}
+\newif\ifzjuSuppressNextSectionBreak
+\zjuSuppressNextSectionBreakfalse
+\newif\ifzjuMainBodySections
+\zjuMainBodySectionsfalse
+\newcommand{\sectionbreak}{
+  \ifzjuSuppressNextSectionBreak
+    \zjuSuppressNextSectionBreakfalse
+  \else
+    \ifzjuMainBodySections\cleardoublepage\else\relax\fi
+  \fi
+}
 \titleformat{\section}
   {\bfseries\raggedright\fontsize{16pt}{20pt}\selectfont}
   {\thesection}{0.5em}{}
@@ -204,12 +214,36 @@
 
 \newif\ifzjuFrontMatter
 \zjuFrontMatterfalse
+\newif\ifzjuPageNumbersFrozen
+\zjuPageNumbersFrozenfalse
+\newcounter{zjuFrozenPage}
 \newcommand{\zjuClearPage}{\cleardoublepage}
 \newcommand{\zjuFrontClearPage}{
   \clearpage
   \ifodd\value{zjuPhysicalPage}
     \thispagestyle{empty}\null\addtocounter{page}{-1}\clearpage
   \fi
+}
+\newcommand{\zjuFreezePageNumbers}{
+  \ifzjuPageNumbersFrozen\else
+    \setcounter{zjuFrozenPage}{\value{page}}
+    \zjuPageNumbersFrozentrue
+  \fi
+  \pagenumbering{gobble}
+  \pagestyle{empty}
+}
+\newcommand{\zjuResumePageNumbers}{
+  \ifzjuPageNumbersFrozen
+    \pagenumbering{arabic}
+    \setcounter{page}{\value{zjuFrozenPage}}
+    \zjuPageNumbersFrozenfalse
+  \fi
+  \pagestyle{zju}
+}
+\newcommand{\zjuFixedTOCEntry}[2]{
+  \phantomsection
+  \label{#2}
+  \addcontentsline{toc}{section}{#1}
 }
 \newcommand{\zjuPartTitle}[2]{
   \ifzjuFrontMatter\zjuFrontClearPage\else\zjuClearPage\fi
@@ -219,6 +253,14 @@
   {\centering\bfseries\fontsize{16pt}{20pt}\selectfont #1\par}
   \vspace{12pt}
   \thispagestyle{zju}
+}
+\newcommand{\zjuUnnumberedPartTitle}[2]{
+  \zjuClearPage
+  \zjuFreezePageNumbers
+  \zjuFixedTOCEntry{#1}{#2}
+  {\centering\bfseries\fontsize{16pt}{20pt}\selectfont #1\par}
+  \vspace{12pt}
+  \thispagestyle{empty}
 }
 \newcommand{\zjuStartPart}[2]{
   \zjuClearPage
