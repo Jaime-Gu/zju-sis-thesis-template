@@ -150,7 +150,10 @@ def preprocess_markdown(text, section):
     lines = []
     for raw_line in text.splitlines():
         stripped = raw_line.strip()
-        if stripped.startswith("Tabla:"):
+        if stripped.startswith("Title:"):
+            value = latex_escape(stripped[len("Title:"):].strip())
+            lines.append(latex_raw_block("\\zjuArticleTitle{" + value + "}"))
+        elif stripped.startswith("Tabla:"):
             value = latex_escape(stripped[len("Tabla:"):].strip())
             lines.append(latex_raw_block("\\zjuTableCaption{" + value + "}"))
         elif stripped.startswith("Fuente:"):

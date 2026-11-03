@@ -108,6 +108,7 @@
 \phantomsection
 \label{translation}
 \addcontentsline{toc}{section}{Traducción de la bibliografía}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
 \setcounter{section}{0}
 {\centering\bfseries\fontsize{16pt}{20pt}\selectfont Traducción de la bibliografía\par}
 \vspace{12pt}
@@ -123,13 +124,16 @@
 {\centering\bfseries\fontsize{16pt}{20pt}\selectfont Texto de origen\par}
 \vspace{12pt}
 %%ORIGINAL%%
+\addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
 
 \zjuClearPage
 \zjuFreezePageNumbers
 \zjuClearPage
 \zjuFixedTOCEntry{毕业论文（设计）文献综述和开题报告考核}{review-assessment}
 \zjuReviewAssessment
-\zjuClearPage
+\thispagestyle{empty}\null\clearpage
 \zjuSpine
+\clearpage
+\thispagestyle{empty}\null\clearpage
 
 \end{document}

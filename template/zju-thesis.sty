@@ -161,10 +161,12 @@
 
 \renewcommand{\cfttoctitlefont}{\hfill\bfseries\fontsize{16pt}{20pt}\selectfont}
 \renewcommand{\cftaftertoctitle}{\hfill\mbox{}}
-\renewcommand{\cftsecfont}{\fontsize{12pt}{18pt}\selectfont}
-\renewcommand{\cftsecpagefont}{\fontsize{12pt}{18pt}\selectfont}
-\renewcommand{\cftsubsecfont}{\fontsize{12pt}{18pt}\selectfont}
-\renewcommand{\cftsubsecpagefont}{\fontsize{12pt}{18pt}\selectfont}
+\setlength{\cftbeforetoctitleskip}{0pt}
+\setlength{\cftaftertoctitleskip}{0pt}
+\renewcommand{\cftsecfont}{\fontsize{12pt}{15pt}\selectfont}
+\renewcommand{\cftsecpagefont}{\fontsize{12pt}{15pt}\selectfont}
+\renewcommand{\cftsubsecfont}{\fontsize{12pt}{15pt}\selectfont}
+\renewcommand{\cftsubsecpagefont}{\fontsize{12pt}{15pt}\selectfont}
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
 \setlength{\cftbeforesecskip}{0pt}
 \setlength{\cftbeforesubsecskip}{0pt}
@@ -258,9 +260,13 @@
   \zjuClearPage
   \zjuFreezePageNumbers
   \zjuFixedTOCEntry{#1}{#2}
-  {\centering\bfseries\fontsize{16pt}{20pt}\selectfont #1\par}
+  {\noindent\bfseries\fontsize{16pt}{20pt}\selectfont #1\par}
   \vspace{12pt}
   \thispagestyle{empty}
+}
+\newcommand{\zjuArticleTitle}[1]{
+  {\centering\bfseries\fontsize{14pt}{20pt}\selectfont #1\par}
+  \vspace{6pt}
 }
 \newcommand{\zjuStartPart}[2]{
   \zjuClearPage
@@ -378,15 +384,20 @@
   \clearpage
 }
 
+\makeatletter
 \newcommand{\zjuContents}{
   \zjuPartTitle{Índice de contenidos}{contents}
+  \vspace{-30pt}
   \begingroup
   \renewcommand{\contentsname}{}
+  \setlength{\baselineskip}{20pt}
   \let\cleardoublepage\relax
   \let\clearpage\relax
-  \tableofcontents
+  \leavevmode
+  \@starttoc{toc}
   \endgroup
 }
+\makeatother
 
 \newcommand{\zjuFixedTitle}[1]{
   \begin{center}
@@ -478,18 +489,16 @@
 
 \newcommand{\zjuSpine}{
   \thispagestyle{empty}
-  \vspace*{2cm}
-  \begin{center}
+  \vspace*{-0.25cm}
+  \noindent\hspace*{-0.3cm}
   \begin{turn}{-90}
-    \renewcommand{\arraystretch}{1.5}
-    \begin{tabular}{|p{2.5cm}|p{19cm}|}
+    \renewcommand{\arraystretch}{1.32}
+    \begin{tabular}{|p{1.85cm}|p{19cm}|}
       \hline
-      题目 & \zjuTitleZh \\
-      作者姓名 & \zjuAuthor\qquad 浙江大学 \\
+      \shortstack{题目\\作者姓名} & \shortstack{\zjuTitleZh\\\zjuAuthor\qquad 浙江大学} \\
       \hline
     \end{tabular}
   \end{turn}
-  \end{center}
   \vfill
 }
 
