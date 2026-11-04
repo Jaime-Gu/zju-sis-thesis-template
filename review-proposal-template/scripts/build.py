@@ -13,14 +13,6 @@ INFO_FILE = ROOT / "论文信息.md"
 CONTENT_FILE = ROOT / "论文.md"
 
 SECTIONS = {
-    "致谢": "acknowledgements",
-    "西文摘要": "abstract_es",
-    "中文摘要": "abstract_zh",
-    "正文": "body",
-    "参考文献": "references",
-    "附录": "appendix",
-    "作者简介": "author",
-    "任务书": "task",
     "指导教师要求": "requirements",
     "文献综述": "review",
     "开题报告": "proposal",
@@ -37,7 +29,7 @@ INFO_KEYS = {
     "年级与专业": "GRADE_MAJOR",
     "所在学院": "COLLEGE",
     "提交日期": "SUBMIT_DATE",
-    "任务书起止日期": "TASK_DATES",
+    "起始页码": "START_PAGE",
 }
 
 
@@ -292,8 +284,8 @@ def build(check_only=False):
         return
 
     OUTPUT.mkdir(exist_ok=True)
-    final_pdf = OUTPUT / "毕业论文.pdf"
-    previous_pdf = OUTPUT / "毕业论文.previous.pdf"
+    final_pdf = OUTPUT / "开题和文献综述.pdf"
+    previous_pdf = OUTPUT / "开题和文献综述.previous.pdf"
     if previous_pdf.exists():
         previous_pdf.unlink()
     if final_pdf.exists():
@@ -311,12 +303,6 @@ def build(check_only=False):
     for section in SECTIONS.values():
         (BUILD / f"{section}.tex").write_text(pandoc_fragment(sections[section], section), encoding="utf-8")
 
-    appendix = ""
-    if sections["appendix"].strip():
-        appendix = "\\zjuUnnumberedPartTitle{Apéndice}{appendix}\n\\input{build/appendix.tex}"
-    author = ""
-    if sections["author"].strip():
-        author = "\\zjuUnnumberedPartTitle{Breve resumen del autor}{author}\n\\input{build/author.tex}"
     original_pdf = ROOT / "外文原文.pdf"
     if original_pdf.exists():
         original = "\\clearpage\\includepdf[pages=-,pagecommand={\\thispagestyle{empty}}]{外文原文.pdf}"
@@ -327,8 +313,6 @@ def build(check_only=False):
     replacements.update({
         "SECRECY_MARK": r"$\boxtimes$" if info["论文性质"] == "涉密" else r"$\square$",
         "PUBLIC_MARK": r"$\boxtimes$" if info["论文性质"] == "公开" else r"$\square$",
-        "APPENDIX": appendix,
-        "AUTHOR_SECTION": author,
         "ORIGINAL": original,
     })
     template = (ROOT / "template" / "thesis-main.tex").read_text(encoding="utf-8")
@@ -358,7 +342,7 @@ def build(check_only=False):
     shutil.copy2(result_pdf, final_pdf)
     if previous_pdf.exists():
         previous_pdf.unlink()
-    print("生成完成：output/毕业论文.pdf")
+    print("生成完成：output/开题和文献综述.pdf")
 
 
 def main():
@@ -369,8 +353,8 @@ def main():
         build(check_only=args.check)
     except BuildError as error:
         print("\n生成失败：\n" + str(error), file=sys.stderr)
-        if (OUTPUT / "毕业论文.previous.pdf").exists():
-            print("上一份 PDF 保存在：output/毕业论文.previous.pdf", file=sys.stderr)
+        if (OUTPUT / "开题和文献综述.previous.pdf").exists():
+            print("上一份 PDF 保存在：output/开题和文献综述.previous.pdf", file=sys.stderr)
         return 1
     except OSError as error:
         print("\n文件读写失败：" + str(error), file=sys.stderr)

@@ -1,70 +1,52 @@
 # Agent 操作手册
 
-本文件供 CodeX、Claude Code、Kimi Code 等 Agent 阅读并执行。人工操作步骤见 `使用说明.md`。
+本仓库包含两个相互独立的 Markdown → PDF 模板。操作时先进入对应子目录，不要在上级目录直接运行 `scripts/build.py`。
 
-## 1. 工作目录与结果
+## 1. 模板与输出
 
-项目根目录为 `zju-sis-thesis-template/`。以下命令默认都在该目录执行。
+| 目录 | 内容 | 输出 |
+| --- | --- | --- |
+| `main-thesis-template/` | 主封面、总目录、承诺书、致谢、中西文摘要、正文目录、正文、参考文献、可选附录和作者简介 | `output/毕业论文.pdf` |
+| `review-proposal-template/` | 文献综述封面、指导教师要求、文献综述、开题报告、外文翻译和外文原文 | `output/开题和文献综述.pdf` |
 
-输入文件：
+两个包均不含任务书、考核表和书脊。每个包有自己的 `论文.md`、`论文信息.md`、脚本、模板、图片和输出目录，可以单独复制或解压使用。
 
-- `论文信息.md`：封面及任务书字段。
-- `论文.md`：全部论文内容。
-- `images/`：正文插图。
-- `外文原文.pdf`：可选附件，放在项目根目录。
-
-输出文件：
-
-```text
-output/毕业论文.pdf
-```
-
-包内 PDF 是排版示例，正式使用前必须替换示例内容并重新生成。构建失败时，`output/毕业论文.pdf` 不会保留为旧版本；上一份 PDF 会保存在 `output/毕业论文.previous.pdf`，避免把旧文件误认为新构建结果。
-
-构建中间文件位于 `build/`。不要手动编辑 `build/`，每次构建都会重新生成其中的文件。
+包内 PDF 是示例。正式使用前必须替换示例内容并重新生成。`build/` 是中间目录，不要手改。
 
 ## 2. 文件结构
 
+每个子包的结构如下：
+
 ```text
-zju-sis-thesis-template/
-├── README.md                 Agent 操作手册
-├── 使用说明.md               人工操作手册
-├── 论文信息.md               必填字段
-├── 论文.md                   论文内容
-├── 生成论文.command          macOS 人工双击入口，会等待回车
-├── 生成论文.bat              Windows 人工双击入口，会等待回车
-├── images/
-│   └── ejemplo.png           示例图片
-├── scripts/
-│   ├── build.py              构建脚本
-│   └── package.py            生成 UTF-8 文件名、无系统杂项的发布 ZIP
+模板目录/
+├── README.md                 Agent 操作说明
+├── 使用说明.md               人工操作说明
+├── 论文信息.md               封面等字段
+├── 论文.md                   全部可编辑正文
+├── 生成论文.command          macOS 双击入口
+├── 生成论文.bat              Windows 双击入口
+├── images/                   插图
+├── scripts/build.py          环境检查与完整构建
 ├── template/
-│   ├── thesis-main.tex       页面顺序及各部分装配
-│   ├── zju-thesis.sty        页面、字体、封面、目录、图表等格式
-│   └── assets/
-│       ├── zju-wordmark.png
-│       └── zju-seal.png
-├── output/
-│   └── 毕业论文.pdf          已生成的示例
-└── 外文原文.pdf              可选；默认不存在
+│   ├── thesis-main.tex       页面装配顺序
+│   ├── zju-thesis.sty        字体、页面、目录和图表格式
+│   └── assets/               校名和校徽图片
+├── output/                   生成的 PDF
+└── 外文原文.pdf              仅开题包使用的可选附件
 ```
 
-修改内容时只编辑 `论文信息.md`、`论文.md`、`images/` 和可选的 `外文原文.pdf`。修改排版时编辑 `template/`。修改解析或构建逻辑时编辑 `scripts/build.py`。
+仓库根目录另有：
+
+- `使用说明.md`：两个包的人工安装和使用说明。
+- `scripts/package.py`：分别生成两个发布 ZIP。
 
 不要用示例文件覆盖用户已经填写的论文内容。
 
-## 3. 依赖
+## 3. 环境与检查
 
-自动构建需要：
+需要 Python 3、Pandoc、XeLaTeX、`ctex`/`xeCJK`/`fandol` 等 TeX 宏包和中英文字体，以及 Times New Roman。Typora 只是人工编辑器，不是构建依赖。
 
-- Python 3；
-- Pandoc；
-- XeLaTeX，以及 `ctex`、`xeCJK`、`fandol` 等 TeX 宏包和字体；
-- Times New Roman。
-
-人工编辑推荐使用 Typora，但 Agent 执行构建不需要 Typora。
-
-检查命令：
+在对应模板目录运行：
 
 ```bash
 # macOS
@@ -74,61 +56,46 @@ python3 scripts/build.py --check
 python scripts\build.py --check
 ```
 
-该命令先检查 Pandoc 和 XeLaTeX，再用真实模板执行一次最小编译，覆盖所需 TeX 宏包和中英文字体。成功时最后显示“基础程序、TeX 宏包和字体检查通过。请继续执行一次完整示例构建。”
+该检查会执行一次真实的最小 XeLaTeX 编译。成功后仍需做一次完整示例构建。
 
-本机完整验证环境为 macOS arm64、Python 3.9.6、Pandoc 3.13、XeTeX 2026（TeX Live 2026）。Windows + MiKTeX 尚未完成实机验证，不应据此声明 Windows 已验证。
-
-如果缺少程序：
-
-- Typora：<https://typora.io/#download>
-- Python：<https://www.python.org/downloads/>
-- Pandoc：<https://pandoc.org/installing.html>
-- macOS 完整 MacTeX：<https://www.tug.org/mactex/>
-- Windows MiKTeX：<https://miktex.org/download>
-
-macOS 构建入口已把 `/Library/TeX/texbin`、`/opt/homebrew/bin` 和 `/usr/local/bin` 加入 PATH。直接调用 `scripts/build.py` 时，如果找不到 `xelatex`，先检查：
+macOS 直接调用脚本时，如找不到 TeX，可先执行：
 
 ```bash
-export PATH="/Library/TeX/texbin:/opt/homebrew/bin:/usr/local/bin:$PATH"
-python3 scripts/build.py --check
+export PATH="/Library/TeX/texbin:$HOME/Library/TinyTeX/bin/universal-darwin:$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
 ```
 
-Windows 安装 Python 时必须把 Python 加入 PATH。MiKTeX 必须允许安装缺少的宏包。
+已验证环境：macOS arm64、Python 3.9.6、Pandoc 3.13、XeTeX 2026（TeX Live 2026）。Windows 入口和命令已实现，但 Windows + MiKTeX 尚未实机验证。
 
-## 4. 执行构建
+## 4. 完整构建
 
-Agent 使用非交互命令，不要调用会等待用户按回车的 `.command` 或 `.bat` 文件。
+Agent 使用非交互命令，不要调用会等待回车的 `.command` 或 `.bat`。
 
 ```bash
-# macOS
+# 主论文包
+cd main-thesis-template
 python3 scripts/build.py
 
-# Windows
-python scripts\build.py
+# 开题和文献综述包
+cd ../review-proposal-template
+python3 scripts/build.py
 ```
 
-构建顺序：
+Windows 使用 `python scripts\build.py`。
 
-1. 检查 Pandoc 和 XeLaTeX。
-2. 读取并校验 `论文信息.md`。
-3. 读取 `论文.md`，按分区标记拆成 13 个部分。
-4. 用 Pandoc 转换为 LaTeX 片段。
-5. 处理标题锚点、参考文献编号、图表、公式和附件。
-6. 将内容装入 `template/thesis-main.tex`。
-7. 连续运行三次 XeLaTeX，更新目录、引用和页码。
-8. 将结果复制到 `output/毕业论文.pdf`。
-
-成功标志：
+脚本依次检查依赖、校验字段和分区、用 Pandoc 转换 Markdown、替换模板字段，并连续运行三次 XeLaTeX。成功标志分别是：
 
 ```text
 生成完成：output/毕业论文.pdf
+生成完成：output/开题和文献综述.pdf
 ```
 
-脚本失败时返回非零退出码。不要把“开始运行 XeLaTeX”当作成功。
+失败时返回非零退出码。旧 PDF 会改名为对应的 `.previous.pdf`，成功生成新文件后自动删除备份；不要仅凭 PDF 文件存在判断本次成功。
 
-## 5. 填写论文信息
+## 5. 输入规则
 
-`论文信息.md` 使用“字段名：字段值”格式。以下字段均不能为空，字段名不能修改：
+### 5.1 论文信息
+
+两个包均使用 `字段名：字段值`，字段名不可修改且不能为空：
 
 ```text
 西语题目：...
@@ -139,24 +106,20 @@ python scripts\build.py
 年级与专业：...
 所在学院：...
 提交日期：...
-任务书起止日期：...
 论文性质：公开
 ```
 
-`论文性质`只能为`公开`或`涉密`。
+开题包额外保留：
 
-解析规则：
+```text
+起始页码：15
+```
 
-- 同时支持中文冒号和英文冒号。
-- 忽略空行、以 `#` 开头的行和以 `<!--` 开头的行。
-- 文件必须为 UTF-8；读取时也兼容带 BOM 的 UTF-8。
-- 字段值中的 LaTeX 特殊字符会由构建脚本转义。
+`论文性质`只能是`公开`或`涉密`。文件使用 UTF-8；支持中文或英文冒号，忽略空行、`#` 开头行和 HTML 注释。字段值中的 LaTeX 特殊字符由脚本转义。
 
-## 6. 编辑论文内容
+### 5.2 主论文包分区
 
-### 6.1 分区
-
-`论文.md` 必须包含以下独立行，名称和顺序固定，不能重复：
+`main-thesis-template/论文.md` 必须按以下顺序保留 7 个独立行标记：
 
 ```text
 【致谢】
@@ -166,7 +129,17 @@ python scripts\build.py
 【参考文献】
 【附录】
 【作者简介】
-【任务书】
+```
+
+不需要附录或作者简介时，保留标记并清空该标记下的示例内容。程序会跳过空部分。
+
+前置部分使用罗马页码，正文从阿拉伯数字 1 开始。附录和作者简介不显示页眉页码，也不消耗正文页码。正文一级标题按双面排版规则从奇数物理页开始。
+
+### 5.3 开题包分区
+
+`review-proposal-template/论文.md` 必须按以下顺序保留 5 个独立行标记：
+
+```text
 【指导教师要求】
 【文献综述】
 【开题报告】
@@ -174,13 +147,9 @@ python scripts\build.py
 【外文原文】
 ```
 
-只编辑标记之间的内容。
+文献综述、开题报告和外文翻译分别从 1 开始章节编号。文献综述页码由`起始页码`决定，后续部分连续编号；封面和指导教师要求不显示页眉页码。
 
-【附录】或【作者简介】不需要内容时，保留标记，删除标记到下一个分区之间的全部文字。构建脚本会跳过该部分。
-
-`<!-- ... -->` 中的注释不会进入 PDF。
-
-### 6.2 标题与段落
+### 5.4 标题与正文
 
 ```markdown
 # 一级标题
@@ -192,105 +161,51 @@ python scripts\build.py
 #### 四级标题
 ```
 
-`#` 后必须有空格。不要手动写章节编号。正文、文献综述和开题报告分别从 1 开始编号。
+`#`后必须有空格。不要手写章节编号。普通文字直接书写，段落之间空一行；不要用段首空格控制缩进，也不要用连续空行控制分页。`<!-- ... -->` 不进入 PDF。
 
-普通正文直接书写，段落之间空一行。不要用段首空格控制缩进，也不要用连续空行控制分页。
-
-### 6.3 摘要关键词
+摘要关键词分别使用：
 
 ```text
 Palabras clave: Español; chino mandarín; difusión internacional
-```
-
-```text
 关键词：西班牙语；汉语普通话；国际传播
 ```
 
-程序只自动加粗标签，不重写关键词内容。
+### 5.5 参考文献
 
-### 6.4 正文参考文献
-
-【参考文献】中每条文献单独一行，不写序号：
+主论文包【参考文献】中每条单独一行，不写序号：
 
 ```text
 Baker, M. Routledge Encyclopedia of Translation Studies[M]. Shanghai: Shanghai Foreign Language Education Press, 2010.
 Cooper, R. L. A Framework for the Study of Language Spread[J]. Language Spread: Studies in Diffusion and Social Change, 1982, 5: 36.
 ```
 
-程序生成`[1]`、`[2]`等编号和悬挂缩进。
+脚本只自动生成 `[1]`、`[2]` 等编号和悬挂缩进，不自动判断文献类型或重排作者、年份、标点。学生必须按学院格式填写每条文献。
 
-【文献综述】和【开题报告】末尾的参考文献属于普通章节内容，其中的`[1]`、`[2]`需要自行维护。
+开题包的文献综述和开题报告参考文献属于普通正文，`[1]`、`[2]` 和整条格式均由作者维护。文内引用也按普通文字填写，例如 `(Cooper 1982:13)`。
 
-### 6.5 引用、长引用和脚注
+### 5.6 图片、表格、公式和引用
 
-文内引用按普通文字书写：
-
-```text
-(Cooper 1982:13)
-```
-
-长引用：
-
-```markdown
-> 引用正文。
->
-> （Autor 2020：25）
-```
-
-脚注：
-
-```markdown
-正文标记。[^1]
-
-[^1]: 脚注说明。
-```
-
-表题、来源和关键词中的 `&`、`%`、`#`、`_`、`{`、`}` 等普通文字会由脚本转义，不要自行添加反斜杠。
-
-内部链接使用 Markdown 锚点。脚本会同步重写标签和链接目标：
-
-```markdown
-# Introduction
-
-[跳转到本章](#introduction)
-```
-
-跨分区链接需要显式写出目标分区前缀，例如 `[查看文献综述标题](#review-introduction)`。常用前缀为 `body`、`review`、`proposal`、`translation`、`original`。
-
-### 6.6 图片
-
-图片使用相对路径，放在 `images/` 中。图片单独占一个段落：
+图片：
 
 ```markdown
 ![图题，不写图号](images/mi-figura.png){width=12cm}
-```
 
-图号自动生成，图题位于图片下方。可调整 `width`，不要超过正文宽度。
-
-图片下一行可写：
-
-```text
 Fuente: Elaboración propia.
 ```
 
-### 6.7 表格
+表格：
 
 ```markdown
-| Partes | Aspectos | Indicadores |
-|:---|:---|:---|
-| Tracción del mercado | General | Índice de Poder |
-| Empuje del gobierno | Gobierno | Aportación |
+| Partes | Aspectos |
+|:---|:---|
+| Tracción del mercado | General |
 
 Tabla: 表题，不写表号
 
 Fuente: Elaboración propia.
 ```
 
-表号自动生成，表题位于表格下方。长文本列会自动换行。大表需要在内容中手动拆分，不能保证超过一页的表格自动完整放入一页。
-
-### 6.8 公式
-
-独立公式：
+公式：
 
 ```markdown
 $$
@@ -298,180 +213,60 @@ U = 3X
 $$
 ```
 
-独立公式自动转为编号公式，按章节显示为`(3-1)`等。
+行内公式使用 `$U$`。图号、表号和独立公式编号自动生成。大表需要人工拆分，不能保证超过一页的表格自动完整放入一页。
 
-行内公式：
+长引用使用 Markdown 引用块 `>`；脚注使用 `[^1]` 和 `[^1]: 脚注说明`。内部链接可使用 `[跳转到本章](#introduction)`；跨分区链接需使用目标分区前缀，例如 `#body-introduction`、`#review-introduction`。
 
-```markdown
-La variable $U$ representa ...
-```
+表题、来源和关键词中的 `&`、`%`、`#`、`_`、`{`、`}` 按普通文字输入，不要自行添加反斜杠。
 
-### 6.8.1 翻译和原文的文章标题
+### 5.7 外文翻译与原文
 
-【外文翻译】和【外文原文】中的文章标题使用 `Title:`，不要把它写成带编号的章节：
+【外文翻译】和【外文原文】的文章标题使用：
 
 ```text
 Title: Apuntes sobre el valor económico del español
 ```
 
-文章标题会居中、加粗且不编号。正文中的 `Introducción`、`简介` 等章节仍按普通一级标题编号，但翻译和原文的内部章节不收入主 `Índice de contenidos`，目录只保留 `Traducción de la bibliografía` 和 `Texto de origen` 两个部分标题。
+该标题居中、加粗且不编号。其内部章节仍用 `#`、`##`，但不会收入主论文目录。
 
-### 6.9 外文原文附件
+开题包根目录存在 `外文原文.pdf` 时，程序在 `Texto de origen` 标题页后插入整份 PDF，忽略【外文原文】的 Markdown 内容；插入页不额外添加模板页眉页码。不存在该文件时，排版【外文原文】中的文字。
 
-存在根目录 `外文原文.pdf` 时：
+## 6. 修改模板与验收
 
-- 在 `Texto de origen` 标题页后插入整份 PDF；
-- 忽略【外文原文】中的文字；
-- 插入页使用空白页面样式，不额外添加模板页眉和页码。
+页面装配在各自的 `template/thesis-main.tex`，格式在 `template/zju-thesis.sty`，解析和构建在 `scripts/build.py`。只输出 PDF，不输出 DOCX；不执行篇幅、文献数量、外文文献数量或文献比例检查。
 
-不存在该文件时，排版【外文原文】中的 Markdown 内容。
-
-### 6.10 页码和目录规则
-
-- 附录、作者简介、任务书、毕业论文考核表、文献综述封面、教师要求和文献综述考核表不显示页眉页码，也不消耗阿拉伯页码。
-- 为保持正文一级标题位于奇数物理页而自动插入的空白页，仍按排版顺序计数。
-- 正文参考文献后的空白页计入正文末尾，文献综述从下一个阿拉伯数字继续编号。
-- 分部标题与第一个一级标题位于同一页；文献综述、开题报告、外文翻译和外文原文内的一级标题按正文流连续排版，不强制另起奇数页。
-- 主 `Índice de contenidos` 收录承诺书、任务书、文献综述封面、教师要求和文献综述考核表，这些固定插页条目不带页码；附录和作者简介条目也不带页码，但翻译和原文的内部章节不收入目录。
-- 附录和作者简介标题左对齐，不显示页眉；书脊前后各保留一个空白页。
-
-## 7. 修改模板
-
-页面顺序在 `template/thesis-main.tex`：
-
-- 主封面、总目录、承诺书；
-- 致谢、西文摘要、中文摘要、目录；
-- 正文、参考文献、可选附录和作者简介；
-- 任务书、考核表、文献综述封面、教师要求；
-- 文献综述、开题报告、外文翻译、外文原文；
-- 文献综述考核表和书脊。
-
-格式在 `template/zju-thesis.sty`：
-
-- A4，上下边距 2.54 cm，左右约 3.17 cm；
-- 正文 12 磅，18 磅行距，首行缩进两个字符；
-- 西文 Times New Roman；
-- 中文正文依次选择 STFangsong、FangSong、FandolFang；页眉和封面密级行使用 9 磅宋体；
-- 承诺书标题 16 磅仿宋、正文 14 磅仿宋；参考文献 10.5 磅；考核表文字 12 磅宋体；文献综述封面大标题 26 磅黑体；
-- 标题、页眉、目录、图表、引用和固定表格样式；
-- 表题位于表格下方；
-- 前置部分罗马数字页码，正文阿拉伯数字页码；
-- 正文一级标题奇数页起页，后续部分按正文流连续排版。
-
-只输出 PDF，不输出 DOCX。
-
-不执行篇幅、参考文献数量、外文文献数量或未出版学位论文比例检查。
-
-## 8. 验收
-
-每次修改内容、脚本或模板后，都要重新执行完整构建，不能只检查 Python 语法或 LaTeX 文件是否存在。
-
-检查输出：
+每次改动后必须完整构建，并检查：
 
 ```bash
-# macOS
-ls -lh output/毕业论文.pdf
-
-# Windows
-dir output\毕业论文.pdf
-```
-
-检查关键错误：
-
-```bash
-# macOS；无输出表示没有发现这些错误
+# macOS；无输出表示未匹配到这些错误
 grep -E "LaTeX Error|undefined|multiply defined|Overfull|LaTeX Font Warning" build/thesis.log || true
 
 # Windows
 findstr /C:"LaTeX Error" /C:"undefined" /C:"multiply defined" /C:"Overfull" /C:"LaTeX Font Warning" build\thesis.log
 ```
 
-需要进一步核对：
+还需检查输出 PDF 能打开、字段无示例残留、标题与页码正确、图表公式编号正确、图片未越界。模板改动后要渲染查看封面、目录、正文图表页及各部分首页，不能只看退出码。
 
-1. 构建命令返回 0，且本次生成的 `output/毕业论文.pdf` 能正常打开；不要只根据旧文件是否存在判断成功。
-2. 封面字段没有示例残留。
-3. 总目录和正文目录页码正确，固定插页条目不显示页码。
-4. 前置页码连续，正文从 1 开始。
-5. 正文一级标题位于奇数物理页，分部标题与第一个一级标题同页，后续部分没有强制空白页。
-6. 附录和作者简介没有页眉页码；固定插页不消耗阿拉伯页码。
-7. 文献综述的页码接续正文末尾，开题报告、外文翻译和外文原文继续连续编号。
-8. 图、表和公式编号正确，内部链接指向正确标题。
-9. 如果存在 `外文原文.pdf`，附件页数、顺序和方向正确。
-10. 书脊题目和姓名正确。
+失败日志依次查看：
 
-修改模板后，应渲染并查看封面、目录、正文图表页、任务书、考核表、文献综述封面和书脊，不能仅以编译退出码判断排版合格。
-
-## 9. 故障处理
-
-### 找不到 `pandoc` 或 `xelatex`
-
-先执行环境检查。确认安装后重新打开终端，并检查 PATH。macOS 可直接检查：
-
-```bash
-/Library/TeX/texbin/xelatex --version
-```
-
-### Windows 找不到 `python`
-
-重新安装 Python 并启用 `Add python.exe to PATH`，然后打开新的命令行窗口。
-
-### 缺少 `.sty` 文件
-
-这是 TeX 宏包缺失。允许 MiKTeX 安装宏包，或在 macOS 的 TeX Live 中安装错误提示的宏包。完整 MacTeX 通常已经包含所需文件。
-
-### 缺少字体
-
-安装 Times New Roman。中文可使用系统仿宋、宋体、黑体，或安装 TeX 的 `fandol` 字体包。
-
-### 分区错误
-
-检查 `论文.md` 是否包含全部 13 个分区标记，是否使用中文方括号，是否有拼写变化或重复。
-
-### 图片错误
-
-检查 `images/` 中的实际文件名、扩展名和 Markdown 相对路径。不要使用原电脑绝对路径。
-
-### 目录或页码未更新
-
-让三次 XeLaTeX 全部完成。不要中途终止。必要时再执行一次完整构建。
-
-### 无法写入 PDF
-
-关闭占用 `output/毕业论文.pdf` 的阅读器，确认目录可写。
-
-### 查看详细日志
-
-依次检查：
-
-1. 构建命令的标准输出和错误输出；
-2. 对应失败轮次的 `build/xelatex-pass-N.txt`；成功和失败都会保存该轮完整输出，旧日志会在构建开始时清理；
+1. 命令完整输出；
+2. `build/xelatex-pass-N.txt`；
 3. `build/thesis.log` 中第一个以 `!` 开头的错误；
-4. 如果是依赖最小编译失败，查看 `build/environment-check.txt`。
+4. 最小编译失败时的 `build/environment-check.txt`。
 
-修复第一个实质性错误后再构建，不要连续重复同一失败命令。
+## 7. 发布打包
 
-## 10. 发布打包
-
-在项目根目录执行：
+在仓库根目录运行：
 
 ```bash
 python3 scripts/package.py
 ```
 
-Windows 使用 `python scripts\package.py`。
+Windows 使用 `python scripts\package.py`。脚本在仓库同级目录生成：
 
-脚本在项目同级目录生成 `zju-sis-thesis-template.zip`。ZIP 内根目录同样为 `zju-sis-thesis-template/`。打包使用 Python `zipfile`，中文文件名带 UTF-8 标志，并排除 `.git/`、`build/`、`__pycache__/`、`.DS_Store`、`__MACOSX/` 和失败构建留下的备份 PDF。
+```text
+main-thesis-template.zip
+review-proposal-template.zip
+```
 
-打包后检查 ZIP CRC、文件清单和中文文件名，不要用 Finder 或其他工具再次压缩该目录，以免重新引入编码和系统杂项问题。
-
-## 11. Agent 执行清单
-
-1. 定位项目根目录。
-2. 阅读现有输入，保留用户已填写内容。
-3. 执行 `scripts/build.py --check`。
-4. 按要求编辑输入或模板。
-5. 执行完整构建。
-6. 检查退出码和 `output/毕业论文.pdf`。
-7. 检查日志中的引用、字体和版面错误。
-8. 模板有改动时，渲染并检查代表性页面。
-9. 报告生成文件路径、验证结果和仍未解决的问题。
+ZIP 内分别以对应模板目录为根目录。脚本排除 `.git/`、`build/`、`__pycache__/`、`.DS_Store`、`__MACOSX/` 和 `.previous.pdf`，并执行 CRC 和目录检查。中文文件名使用 UTF-8 标志。发布前应解压两个 ZIP，分别执行完整构建。

@@ -2,7 +2,7 @@
 set -u
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 cd "$ROOT" || exit 1
-export PATH="/Library/TeX/texbin:/opt/homebrew/bin:/usr/local/bin:$PATH"
+export PATH="$HOME/.local/bin:/Library/TeX/texbin:$HOME/Library/TinyTeX/bin/universal-darwin:/opt/homebrew/bin:/usr/local/bin:$PATH"
 
 if command -v python3 >/dev/null 2>&1; then
   PYTHON=python3

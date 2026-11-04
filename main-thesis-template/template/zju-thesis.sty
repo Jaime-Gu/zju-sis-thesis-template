@@ -1,0 +1,512 @@
+\ProvidesPackage{zju-thesis}[2026/11/04 ZJU Spanish thesis Markdown template]
+
+\RequirePackage{fontspec}
+\RequirePackage{geometry}
+\RequirePackage{graphicx}
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{setspace}
+\RequirePackage{titlesec}
+\RequirePackage{fancyhdr}
+\RequirePackage{tocloft}
+\RequirePackage{enumitem}
+\RequirePackage{array}
+\RequirePackage{tabularx}
+\RequirePackage{longtable}
+\RequirePackage{booktabs}
+\RequirePackage{multirow}
+\RequirePackage{caption}
+\RequirePackage{float}
+\RequirePackage{needspace}
+\RequirePackage{pdfpages}
+\RequirePackage{rotating}
+\RequirePackage{emptypage}
+\RequirePackage{xurl}
+\RequirePackage{polyglossia}
+\RequirePackage{everypage}
+
+\IfFontExistsTF{Times New Roman}{
+  \setmainfont{Times New Roman}
+}{
+  \PackageError{zju-thesis}{Times New Roman is not installed}{Install Times New Roman and run the build again.}
+}
+
+\IfFontExistsTF{STFangsong}{
+  \setCJKmainfont[AutoFakeBold=2]{STFangsong}
+}{
+  \IfFontExistsTF{FangSong}{
+    \setCJKmainfont[AutoFakeBold=2]{FangSong}
+  }{
+    \IfFontExistsTF{FandolFang}{
+      \setCJKmainfont[AutoFakeBold=2]{FandolFang}
+    }{
+      \PackageError{zju-thesis}{No FangSong font is available}{Install FangSong or the TeX Live fandol package.}
+    }
+  }
+}
+
+\IfFontExistsTF{STHeiti}{
+  \newCJKfontfamily\zjuhei[AutoFakeBold=2]{STHeiti}
+}{
+  \IfFontExistsTF{SimHei}{
+    \newCJKfontfamily\zjuhei[AutoFakeBold=2]{SimHei}
+  }{
+    \IfFontExistsTF{FandolHei}{
+      \newCJKfontfamily\zjuhei[AutoFakeBold=2]{FandolHei}
+    }{
+      \PackageError{zju-thesis}{No Hei font is available}{Install SimHei or the TeX Live fandol package.}
+    }
+  }
+}
+
+\IfFontExistsTF{Songti SC}{
+  \newCJKfontfamily\zjusong[AutoFakeBold=2]{Songti SC}
+}{
+  \IfFontExistsTF{SimSun}{
+    \newCJKfontfamily\zjusong[AutoFakeBold=2]{SimSun}
+  }{
+    \IfFontExistsTF{FandolSong}{
+      \newCJKfontfamily\zjusong[AutoFakeBold=2]{FandolSong}
+    }{
+      \PackageError{zju-thesis}{No Song font is available}{Install SimSun or the TeX Live fandol package.}
+    }
+  }
+}
+
+\setdefaultlanguage{spanish}
+\setotherlanguage{english}
+\renewcommand{\contentsname}{}
+
+\geometry{
+  a4paper,
+  top=2.54cm,
+  bottom=2.54cm,
+  left=3.17cm,
+  right=3.17cm,
+  headheight=12pt,
+  headsep=1.15cm,
+  footskip=1.75cm
+}
+
+\makeatletter
+\renewcommand{\normalsize}{\@setfontsize\normalsize{12pt}{18pt}}
+\renewcommand{\footnotesize}{\@setfontsize\footnotesize{9pt}{12pt}}
+\makeatother
+\normalsize
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0pt}
+\setlength{\emergencystretch}{2em}
+\raggedbottom
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{2}
+\newif\ifzjuSuppressNextSectionBreak
+\zjuSuppressNextSectionBreakfalse
+\newif\ifzjuMainBodySections
+\zjuMainBodySectionsfalse
+\newcommand{\sectionbreak}{
+  \ifzjuSuppressNextSectionBreak
+    \zjuSuppressNextSectionBreakfalse
+  \else
+    \ifzjuMainBodySections\cleardoublepage\else\relax\fi
+  \fi
+}
+\titleformat{\section}
+  {\bfseries\raggedright\fontsize{16pt}{20pt}\selectfont}
+  {\thesection}{0.5em}{}
+\titlespacing*{\section}{0pt}{0pt}{12pt}
+\titleformat{\subsection}
+  {\bfseries\raggedright\fontsize{15pt}{19pt}\selectfont}
+  {\thesubsection}{0.5em}{}
+\titlespacing*{\subsection}{0pt}{12pt}{6pt}
+\titleformat{\subsubsection}
+  {\bfseries\raggedright\fontsize{14pt}{18pt}\selectfont}
+  {\thesubsubsection}{0.5em}{}
+\titlespacing*{\subsubsection}{0pt}{10pt}{4pt}
+\titleformat{\paragraph}
+  {\bfseries\raggedright\fontsize{12pt}{18pt}\selectfont}
+  {\theparagraph}{0.5em}{}
+\titlespacing*{\paragraph}{0pt}{8pt}{4pt}
+\makeatletter
+\@addtoreset{equation}{section}
+\makeatother
+\renewcommand{\theequation}{\arabic{section}-\arabic{equation}}
+
+\newcommand{\zjuRunningTitle}{}
+\newcommand{\zjuTitleEs}{}
+\newcommand{\zjuTitleZh}{}
+\newcommand{\zjuAuthor}{}
+\newcommand{\zjuStudentId}{}
+\newcommand{\zjuAdvisor}{}
+\newcommand{\zjuGradeMajor}{}
+\newcommand{\zjuCollege}{}
+\newcommand{\zjuSubmitDate}{}
+\newcommand{\zjuTaskDates}{}
+\newcommand{\zjuSecrecyMark}{$\square$}
+\newcommand{\zjuPublicMark}{$\boxtimes$}
+\newcounter{zjuPhysicalPage}
+\AddEverypageHook{\stepcounter{zjuPhysicalPage}}
+
+\fancypagestyle{zju}{
+  \fancyhf{}
+  \fancyhead[L]{\zjusong\fontsize{9pt}{12pt}\selectfont 浙江大学学士学位毕业论文}
+  \fancyhead[R]{\zjusong\fontsize{9pt}{12pt}\selectfont\zjuRunningTitle}
+  \fancyfoot[L]{\ifodd\value{zjuPhysicalPage}\else\fontsize{9pt}{12pt}\selectfont\thepage\fi}
+  \fancyfoot[R]{\ifodd\value{zjuPhysicalPage}\fontsize{9pt}{12pt}\selectfont\thepage\fi}
+  \renewcommand{\headrulewidth}{0.5pt}
+  \renewcommand{\footrulewidth}{0pt}
+}
+\fancypagestyle{plain}{\pagestyle{zju}}
+\pagestyle{zju}
+
+\renewcommand{\cfttoctitlefont}{\hfill\bfseries\fontsize{16pt}{20pt}\selectfont}
+\renewcommand{\cftaftertoctitle}{\hfill\mbox{}}
+\setlength{\cftbeforetoctitleskip}{0pt}
+\setlength{\cftaftertoctitleskip}{0pt}
+\renewcommand{\cftsecfont}{\fontsize{12pt}{15pt}\selectfont}
+\renewcommand{\cftsecpagefont}{\fontsize{12pt}{15pt}\selectfont}
+\renewcommand{\cftsubsecfont}{\fontsize{12pt}{15pt}\selectfont}
+\renewcommand{\cftsubsecpagefont}{\fontsize{12pt}{15pt}\selectfont}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\setlength{\cftbeforesecskip}{0pt}
+\setlength{\cftbeforesubsecskip}{0pt}
+\setlength{\cftsecindent}{0pt}
+\setlength{\cftsubsecindent}{2em}
+\setlength{\cftsecnumwidth}{2.5em}
+\setlength{\cftsubsecnumwidth}{3.5em}
+
+\captionsetup[figure]{
+  name=Gráfico,
+  labelsep=period,
+  font={small,bf},
+  justification=centering,
+  singlelinecheck=false,
+  position=bottom,
+  skip=6pt
+}
+\captionsetup[table]{
+  name=Tabla,
+  labelsep=period,
+  font={small,bf},
+  justification=centering,
+  singlelinecheck=false,
+  position=bottom,
+  skip=6pt
+}
+\floatplacement{figure}{H}
+\newcommand{\zjuTableCaption}[1]{%
+  \par\vspace{6pt}
+  {\addtocounter{table}{-1}\captionsetup{position=bottom}\captionof{table}{#1}}%
+  \par\vspace{6pt}
+}
+\newcommand{\zjuSource}[1]{%
+  \par\noindent{\fontsize{10.5pt}{14pt}\selectfont Fuente: #1\par}\vspace{6pt}
+}
+
+\renewenvironment{quote}
+  {\list{}{\leftmargin=4em\rightmargin=4em}\item\relax\fontsize{10pt}{15pt}\selectfont}
+  {\endlist}
+
+\newenvironment{zjureferences}
+  {\begingroup\zjusong\fontsize{10.5pt}{15.75pt}\selectfont\setlist[enumerate,1]{label={[\arabic{enumi}]},leftmargin=3em,labelsep=0.5em,itemsep=0pt,parsep=0pt,topsep=0pt}}
+  {\endgroup}
+
+\newcommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\providecommand{\pandocbounded}[1]{#1}
+
+\newif\ifzjuFrontMatter
+\zjuFrontMatterfalse
+\newif\ifzjuPageNumbersFrozen
+\zjuPageNumbersFrozenfalse
+\newcounter{zjuFrozenPage}
+\newcommand{\zjuClearPage}{\cleardoublepage}
+\newcommand{\zjuFrontClearPage}{
+  \clearpage
+  \ifodd\value{zjuPhysicalPage}
+    \thispagestyle{empty}\null\addtocounter{page}{-1}\clearpage
+  \fi
+}
+\newcommand{\zjuFreezePageNumbers}{
+  \ifzjuPageNumbersFrozen\else
+    \setcounter{zjuFrozenPage}{\value{page}}
+    \zjuPageNumbersFrozentrue
+  \fi
+  \pagenumbering{gobble}
+  \pagestyle{empty}
+}
+\newcommand{\zjuResumePageNumbers}{
+  \ifzjuPageNumbersFrozen
+    \pagenumbering{arabic}
+    \setcounter{page}{\value{zjuFrozenPage}}
+    \zjuPageNumbersFrozenfalse
+  \fi
+  \pagestyle{zju}
+}
+\newcommand{\zjuFixedTOCEntry}[2]{
+  \phantomsection
+  \label{#2}
+  \addcontentsline{toc}{section}{#1}
+}
+\newcommand{\zjuPartTitle}[2]{
+  \ifzjuFrontMatter\zjuFrontClearPage\else\zjuClearPage\fi
+  \phantomsection
+  \label{#2}
+  \addcontentsline{toc}{section}{#1}
+  {\centering\bfseries\fontsize{16pt}{20pt}\selectfont #1\par}
+  \vspace{12pt}
+  \thispagestyle{zju}
+}
+\newcommand{\zjuUnnumberedPartTitle}[2]{
+  \zjuClearPage
+  \zjuFreezePageNumbers
+  \zjuFixedTOCEntry{#1}{#2}
+  {\noindent\bfseries\fontsize{16pt}{20pt}\selectfont #1\par}
+  \vspace{12pt}
+  \thispagestyle{empty}
+}
+\newcommand{\zjuArticleTitle}[1]{
+  {\centering\bfseries\fontsize{14pt}{20pt}\selectfont #1\par}
+  \vspace{6pt}
+}
+\newcommand{\zjuStartPart}[2]{
+  \zjuClearPage
+  \renewcommand{\zjuRunningTitle}{#1}
+  \phantomsection
+  \label{#2}
+  \thispagestyle{zju}
+}
+\newcommand{\zjuTotalLine}[2]{
+  \par\noindent
+  {\bfseries\fontsize{18pt}{27pt}\selectfont
+   #1\if\relax\detokenize{#2}\relax\else\dotfill #2\fi\par}
+}
+\newcommand{\zjuCoverLabel}[1]{{\zjuhei\bfseries\fontsize{16pt}{18pt}\selectfont #1}}
+\newcommand{\zjuReviewCoverLabel}[1]{{\bfseries\fontsize{16pt}{18pt}\selectfont #1}}
+\newcommand{\zjuCoverValue}{\bfseries\fontsize{16pt}{18pt}\selectfont}
+\newcommand{\zjuCoverRow}[2]{\rule[-0.45cm]{0pt}{1.5cm}\zjuCoverLabel{#1} & {\zjuCoverValue\centering #2\par} \\ \hline}
+\newcommand{\zjuReviewCoverRow}[2]{\rule[-0.45cm]{0pt}{1.5cm}\zjuReviewCoverLabel{#1} & {\zjuCoverValue\centering #2\par} \\ \hline}
+
+\newcommand{\zjuMainCover}{
+  \thispagestyle{empty}
+  \noindent{\zjusong\bfseries\fontsize{9pt}{12pt}\selectfont 涉密论文 \zjuSecrecyMark\quad 公开论文 \zjuPublicMark}\par
+  \vspace{1.2cm}
+  \begin{center}
+    \includegraphics[width=10.795cm]{template/assets/zju-wordmark.png}\par
+    \vspace{0.5cm}
+    {\zjuhei\bfseries\fontsize{26pt}{32pt}\selectfont 本科生毕业论文（设计）\par}
+    \vspace{0.5cm}
+    \includegraphics[width=3cm]{template/assets/zju-seal.png}\par
+  \end{center}
+  \vspace{0.4cm}
+  \begin{center}
+  \renewcommand{\arraystretch}{1}
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabularx}{14.25cm}{>{\centering\arraybackslash}p{3.5cm}>{\centering\arraybackslash}X}
+    \zjuCoverRow{题　　目}{\zjuTitleEs}
+    \zjuCoverRow{}{\zjuTitleZh}
+    \zjuCoverRow{姓\ 名\ 与\ 学\ 号}{\zjuAuthor\quad\zjuStudentId}
+    \zjuCoverRow{指\ 导\ 教\ 师}{\zjuAdvisor}
+    \zjuCoverRow{年\ 级\ 与\ 专\ 业}{\zjuGradeMajor}
+    \zjuCoverRow{所\ 在\ 学\ 院}{\zjuCollege}
+    \zjuCoverRow{提\ 交\ 日\ 期}{\zjuSubmitDate}
+  \end{tabularx}
+  \end{center}
+  \clearpage
+}
+
+\newcommand{\zjuReviewCover}{
+  \thispagestyle{empty}
+  \noindent{\zjusong\bfseries\fontsize{9pt}{12pt}\selectfont 涉密论文 \zjuSecrecyMark\quad 公开论文 \zjuPublicMark}\par
+  \vspace{1.1cm}
+  \begin{center}
+    \includegraphics[width=10.795cm]{template/assets/zju-wordmark.png}\par
+    \vspace{0.35cm}
+    {\zjuhei\bfseries\fontsize{26pt}{32pt}\selectfont 本科生毕业论文（设计）\par}
+    \vspace{0.2cm}
+    {\zjuhei\bfseries\fontsize{26pt}{32pt}\selectfont 文献综述和开题报告\par}
+    \vspace{0.45cm}
+    \includegraphics[width=3cm]{template/assets/zju-seal.png}\par
+  \end{center}
+  \vspace{1.1cm}
+  \begin{center}
+  \begin{tabularx}{14.25cm}{>{\centering\arraybackslash}p{3.5cm}>{\centering\arraybackslash}X}
+    \zjuReviewCoverRow{姓\ 名\ 与\ 学\ 号}{\zjuAuthor\quad\zjuStudentId}
+    \zjuReviewCoverRow{指\ 导\ 教\ 师}{\zjuAdvisor}
+    \zjuReviewCoverRow{年\ 级\ 与\ 专\ 业}{\zjuGradeMajor}
+    \zjuReviewCoverRow{所\ 在\ 学\ 院}{\zjuCollege}
+  \end{tabularx}
+  \end{center}
+  \clearpage
+}
+
+\newcommand{\zjuTotalContents}{
+  \thispagestyle{empty}
+  \begin{center}
+    {\bfseries\fontsize{22pt}{30pt}\selectfont 总目录\par}
+  \end{center}
+  \vspace{0.5cm}
+  \zjuTotalLine{（1）浙江大学本科生毕业论文（设计）承诺书}{}
+  \zjuTotalLine{（2）致谢}{\pageref{acknowledgements}}
+  \zjuTotalLine{（3）中西文摘要}{\pageref{abstract-es}}
+  \zjuTotalLine{（4）论文正文}{\pageref{body}}
+  \clearpage
+}
+
+\newcommand{\zjuPromise}{
+  \thispagestyle{empty}
+  \begin{center}
+    {\bfseries\fontsize{16pt}{22pt}\selectfont 浙江大学本科生毕业论文（设计）承诺书\par}
+  \end{center}
+  \vspace{0.5cm}
+  \fontsize{14pt}{21pt}\selectfont
+  \begin{enumerate}[label=\arabic*.,leftmargin=2.5em,itemsep=6pt]
+    \item 本人郑重地承诺所呈交的毕业论文（设计），是在指导教师的指导下严格按照学校和学院有关规定完成的。
+    \item 本人在毕业论文（设计）中除了文中特别加以标注和致谢的地方外，论文中不包含其他人已经发表或撰写过的研究成果，也不包含为获得浙江大学或其他教育机构的学位或证书而使用过的材料。
+    \item 与我一同工作的同志对本研究所做的任何贡献均已在论文中作了明确的说明并表示谢意。
+    \item 本人承诺在毕业论文（设计）工作过程中没有伪造数据等行为。
+    \item 若在本毕业论文（设计）中有侵犯任何方面知识产权的行为，由本人承担相应的法律责任。
+    \item 本人完全了解浙江大学有权保留并向有关部门或机构送交本论文（设计）的复印件和磁盘，允许本论文（设计）被查阅和借阅。本人授权浙江大学可以将本论文（设计）的全部或部分内容编入有关数据库进行检索和传播，可以采用影印、缩印或扫描等复制手段保存、汇编本论文（设计）。
+  \end{enumerate}
+  \vspace{1.2cm}
+  \noindent 作者签名：\underline{\hspace{4cm}}\hfill 导师签名：\underline{\hspace{4cm}}\par
+  \vspace{0.8cm}
+  \noindent 签字日期：\quad 年\quad 月\quad 日\hfill 签字日期：\quad 年\quad 月\quad 日\par
+  \normalsize
+  \clearpage
+}
+
+\makeatletter
+\newcommand{\zjuContents}{
+  \zjuPartTitle{Índice de contenidos}{contents}
+  \vspace{-30pt}
+  \begingroup
+  \renewcommand{\contentsname}{}
+  \setlength{\baselineskip}{20pt}
+  \let\cleardoublepage\relax
+  \let\clearpage\relax
+  \leavevmode
+  \@starttoc{toc}
+  \endgroup
+}
+\makeatother
+
+\newcommand{\zjuFixedTitle}[1]{
+  \begin{center}
+    {\zjuhei\bfseries\fontsize{18pt}{26pt}\selectfont #1\par}
+  \end{center}
+}
+
+\newcommand{\zjuTaskBook}[1]{
+  \thispagestyle{empty}
+  \zjuFixedTitle{本科生毕业论文（设计）任务书}
+  \noindent{\bfseries 一、题目：}\zjuTitleEs\par
+  \vspace{0.4cm}
+  \noindent{\bfseries 二、指导教师对毕业论文（设计）的进度安排及任务要求：}\par
+  #1\par
+  \vspace{0.5cm}
+  \noindent 起讫日期\quad\zjuTaskDates\par
+  \vspace{0.7cm}
+  \noindent 指导教师（签名）\underline{\hspace{3cm}}\quad 职称\underline{\hspace{2cm}}\par
+  \vspace{0.8cm}
+  \noindent{\bfseries 三、系或研究所审核意见：}\par
+  \vspace{2.2cm}
+  \noindent 负责人（签名）\underline{\hspace{3cm}}\par
+  \vspace{0.5cm}
+  \noindent\hfill 年\quad 月\quad 日\par
+  \clearpage
+}
+
+\newcommand{\zjuThesisAssessment}{
+  \thispagestyle{empty}
+  \vspace*{0.11cm}
+  \noindent{\bfseries\fontsize{14pt}{20pt}\selectfont 毕\ 业\ 论\ 文（设计）\ 考\ 核\par}
+  \noindent{\bfseries 一、指导教师对毕业论文（设计）的评语：}\par
+  \vspace{5.52cm}
+  \noindent\hfill 指导教师（签名）\underline{\hspace{4cm}}\par
+  \vspace{0.24cm}
+  \noindent\hfill 年\quad 月\quad 日\par
+  \vspace{0.6cm}
+  \noindent{\bfseries 二、答辩小组对毕业论文（设计）的答辩评语及总评成绩：}\par
+  \vspace{4.92cm}
+  \noindent\hspace*{-0.89cm}
+  {\zjusong\fontsize{12pt}{16pt}\selectfont
+  \renewcommand{\arraystretch}{3.4}
+  \setlength{\tabcolsep}{0.2pt}
+  \begin{tabular}{|p{1.65cm}|p{2.55cm}|p{2.55cm}|p{2.3cm}|p{3.05cm}|p{2.1cm}|}
+    \hline
+    成绩比例 & 文献综述 & 开题报告 & 外文翻译 & \shortstack{\fontsize{10.5pt}{14pt}\selectfont 毕业论文（设计）\\质量及答辩} & 总评成绩 \\
+     & 占（10\%） & 占（15\%） & 占（5\%） & 占（70\%） & \\ \hline
+  \end{tabular}
+  \par\vspace{-2.54cm}
+  \renewcommand{\arraystretch}{1.4}
+  \hspace*{-1.59cm}
+  \begin{tabular}{|p{1.65cm}|p{2.55cm}|p{2.55cm}|p{2.3cm}|p{3.05cm}|p{2.1cm}|}
+    \hline
+    分值 & & & & & \\[0cm] \hline
+  \end{tabular}
+  }
+  \par\vspace{0.34cm}
+  \noindent\hfill 答辩小组负责人（签名）\underline{\hspace{3cm}}\par
+  \vspace{0.4cm}
+  \noindent\hfill 年\quad 月\quad 日\par
+  \clearpage
+}
+
+\newcommand{\zjuRequirements}[1]{
+  \thispagestyle{empty}
+  \noindent{\bfseries\fontsize{14pt}{20pt}\selectfont 一、题目：}\zjuTitleEs\par
+  \vspace{0.5cm}
+  \noindent{\bfseries\fontsize{14pt}{20pt}\selectfont 二、指导教师对文献综述和开题报告的具体要求：}\par
+  #1\par
+  \vfill
+  \noindent\hfill 指导教师（签名）\underline{\hspace{3cm}}\par
+  \vspace{0.5cm}
+  \noindent\hfill 年\quad 月\quad 日\par
+  \clearpage
+}
+
+\newcommand{\zjuReviewAssessment}{
+  \thispagestyle{empty}
+  \vspace*{-0.64cm}
+  \begin{center}
+    {\bfseries\fontsize{16pt}{22pt}\selectfont 毕业论文（设计）文献综述和开题报告考核\par}
+  \end{center}
+  \noindent{\bfseries 一、对文献综述、外文翻译和开题报告评语及成绩评定：}\par
+  \vspace{14.33cm}
+  \begin{center}
+  \renewcommand{\arraystretch}{2.3}
+  \setlength{\tabcolsep}{0.2pt}
+  \zjusong\fontsize{12pt}{16pt}\selectfont
+  \begin{tabular}{|p{3.05cm}|p{2.8cm}|p{2.75cm}|p{2.45cm}|}
+    \hline
+    成绩比例 & \shortstack{文献综述\\占（10\%）} & \shortstack{开题报告\\占（15\%）} & \shortstack{外文翻译\\占（5\%）} \\ \hline
+    \renewcommand{\arraystretch}{0.5}
+    分值 & & & \\[-0.72cm] \hline
+  \end{tabular}
+  \end{center}
+  \vspace{0.6cm}
+  \noindent\hfill 开题报告答辩小组负责人（签名）\underline{\hspace{3cm}}\par
+  \vspace{0.5cm}
+  \noindent\hfill 年\quad 月\quad 日\par
+  \clearpage
+}
+
+\newcommand{\zjuSpine}{
+  \thispagestyle{empty}
+  \vspace*{-0.25cm}
+  \noindent\hspace*{-0.3cm}
+  \begin{turn}{-90}
+    \renewcommand{\arraystretch}{1.32}
+    \begin{tabular}{|p{2.1cm}|p{19cm}|}
+      \hline
+      题目 & \zjuTitleZh \\
+      作者姓名 & \zjuAuthor\qquad 浙江大学 \\
+      \hline
+    \end{tabular}
+  \end{turn}
+  \vfill
+}
+
+\AtBeginDocument{
+  \hypersetup{pdftitle={\zjuTitleEs},pdfauthor={\zjuAuthor},unicode=true}
+}
