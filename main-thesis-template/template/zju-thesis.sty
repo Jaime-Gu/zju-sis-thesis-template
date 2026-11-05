@@ -260,9 +260,9 @@
   \phantomsection
   \label{#2}
   \addcontentsline{toc}{section}{#1}
-  \ifzjuFrontMatter\else\vspace*{-8pt}\fi
+  \ifzjuFrontMatter\vspace*{-21pt}\else\vspace*{-8pt}\fi
   {\centering\bfseries\fontsize{16pt}{20pt}\selectfont #1\par}
-  \vspace{12pt}
+  \ifzjuFrontMatter\else\vspace{12pt}\fi
   \ifzjuFrontMatter\thispagestyle{zjufront}\else\thispagestyle{zju}\fi
 }
 \newcommand{\zjuUnnumberedPartTitle}[3][20pt]{
@@ -391,7 +391,7 @@
 \makeatletter
 \newcommand{\zjuContents}{
   \zjuPartTitle{Índice de contenidos}{contents}
-  \vspace{-30pt}
+  \vspace{-21.5pt}
   \begingroup
   \renewcommand{\contentsname}{}
   \setlength{\baselineskip}{20pt}
