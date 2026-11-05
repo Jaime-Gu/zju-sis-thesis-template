@@ -24,9 +24,33 @@ review-proposal-template/
 
 本包包含文献综述封面、指导教师要求、文献综述、开题报告、外文翻译和外文原文；不含主论文、任务书、考核表和书脊。
 
-## 环境与构建
+## 首次接管：自动配置环境并验证
 
-需要 Python 3、Pandoc、XeLaTeX、模板所用 TeX 宏包和中文字体、Times New Roman。Typora 不是构建依赖。
+Agent 先检查并配置环境，不要只提供下载链接，也不要直接修改论文。安装系统软件前说明安装项目，并遵守本机权限和授权提示。
+
+逐项检查 Python 3、Pandoc、XeLaTeX、所需 TeX 宏包和中文字体、Times New Roman。**不要安装 Typora 或其他 Markdown 编辑器，它们不是构建依赖。**
+
+### macOS
+
+- 缺少 Python 或 Pandoc 时，使用官方安装包，或使用已有 Homebrew 安装。
+- 缺少 TeX 时安装完整 MacTeX；使用 TinyTeX 时必须继续安装所需宏包和 `fandol` 中文字体。
+- 用 TeX 包管理器安装缺失宏包。Times New Roman 缺失时提醒用户安装合法字体，不使用来源不明的字体。
+- 安装后刷新 PATH：
+
+  ```bash
+  export PATH="/Library/TeX/texbin:$HOME/Library/TinyTeX/bin/universal-darwin:$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
+  ```
+
+- 使用 `python3`。`.command` 无执行权限时运行 `chmod +x 生成论文.command`。
+
+### Windows
+
+- 安装官方 Python 3 时启用 `Add python.exe to PATH`；Pandoc 使用官方 `.msi` 或已有 winget。
+- TeX 使用 MiKTeX Basic Installer，允许自动安装缺失宏包；缺包时通过 MiKTeX Console 安装，首次构建保持联网。
+- 安装后重新打开命令行，确认 `python --version`、`pandoc --version`、`xelatex --version` 可用。
+- 使用 `python` 和 `scripts\build.py`，不要照搬 macOS 的 `python3` 和路径写法。
+
+### 必须执行的验证
 
 ```bash
 # macOS
@@ -38,7 +62,7 @@ python scripts\build.py --check
 python scripts\build.py
 ```
 
-`--check` 会执行最小编译，完整命令会运行三次 XeLaTeX。Agent 不要调用会等待回车的 `.command` 或 `.bat`。
+`--check` 会执行最小编译，完整命令会运行三次 XeLaTeX。Agent 不要调用会等待回车的 `.command` 或 `.bat`。缺少依赖时继续安装修复，不能把包内旧 PDF 当作本次构建成功。失败时查看 `build/xelatex-pass-N.txt` 和 `build/thesis.log`。
 
 成功标志：
 
@@ -47,6 +71,12 @@ python scripts\build.py
 ```
 
 失败返回非零退出码，旧文件移至 `output/开题和文献综述.previous.pdf`。成功后自动删除备份。
+
+### 环境完成后告诉用户
+
+用简洁中文告诉用户：只修改 `论文信息.md` 的冒号后字段，在 `论文.md` 中按原有分区替换示例内容；保留全部【分区标记】，标题用 `#`、`##` 且不写编号，普通段落之间空一行，图片放入 `images/` 并使用相对路径，文件保存为 UTF-8。文献综述和开题报告的参考文献序号及格式需要用户自己维护。
+
+修改后 macOS 双击 `生成论文.command`，Windows 双击 `生成论文.bat`，在 `output/` 查看新 PDF。需要衔接主论文页码时修改`起始页码`；有现成原文时将附件命名为 `外文原文.pdf` 放在本目录。编辑器由用户自行选择，不需要安装 Typora，也不要编辑 `build/`。
 
 ## 论文信息
 
