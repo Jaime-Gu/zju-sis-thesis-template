@@ -85,7 +85,7 @@
   right=3.17cm,
   headheight=12pt,
   headsep=1.15cm,
-  footskip=1.75cm
+  footskip=1.1cm
 }
 
 \makeatletter
@@ -151,8 +151,16 @@
   \fancyhf{}
   \fancyhead[L]{\zjusong\fontsize{9pt}{12pt}\selectfont 浙江大学学士学位毕业论文}
   \fancyhead[R]{\zjusong\fontsize{9pt}{12pt}\selectfont\zjuRunningTitle}
-  \fancyfoot[L]{\ifodd\value{zjuPhysicalPage}\else\fontsize{9pt}{12pt}\selectfont\thepage\fi}
-  \fancyfoot[R]{\ifodd\value{zjuPhysicalPage}\fontsize{9pt}{12pt}\selectfont\thepage\fi}
+  \fancyfoot[L]{\ifodd\value{page}\else\fontsize{9pt}{12pt}\selectfont\thepage\fi}
+  \fancyfoot[R]{\ifodd\value{page}\fontsize{9pt}{12pt}\selectfont\thepage\fi}
+  \renewcommand{\headrulewidth}{0.5pt}
+  \renewcommand{\footrulewidth}{0pt}
+}
+\fancypagestyle{zjufront}{
+  \fancyhf{}
+  \fancyhead[L]{\zjusong\fontsize{9pt}{12pt}\selectfont 浙江大学学士学位毕业论文}
+  \fancyhead[R]{\zjusong\fontsize{9pt}{12pt}\selectfont\zjuRunningTitle}
+  \fancyfoot[C]{\fontsize{9pt}{12pt}\selectfont\thepage}
   \renewcommand{\headrulewidth}{0.5pt}
   \renewcommand{\footrulewidth}{0pt}
 }
@@ -208,7 +216,7 @@
   {\endlist}
 
 \newenvironment{zjureferences}
-  {\begingroup\zjusong\fontsize{10.5pt}{15.75pt}\selectfont\setlist[enumerate,1]{label={[\arabic{enumi}]},leftmargin=3em,labelsep=0.5em,itemsep=0pt,parsep=0pt,topsep=0pt}}
+  {\begingroup\linespread{1}\zjusong\fontsize{10.5pt}{12pt}\selectfont\setlength{\parskip}{0pt}\setlist[enumerate,1]{label={[\arabic{enumi}]},leftmargin=3em,labelsep=0.5em,itemsep=0pt,parsep=0pt,topsep=0pt,partopsep=0pt}}
   {\endgroup}
 
 \newcommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
@@ -254,7 +262,7 @@
   \addcontentsline{toc}{section}{#1}
   {\centering\bfseries\fontsize{16pt}{20pt}\selectfont #1\par}
   \vspace{12pt}
-  \thispagestyle{zju}
+  \ifzjuFrontMatter\thispagestyle{zjufront}\else\thispagestyle{zju}\fi
 }
 \newcommand{\zjuUnnumberedPartTitle}[3][20pt]{
   \zjuClearPage
