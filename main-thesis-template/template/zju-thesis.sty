@@ -256,11 +256,12 @@
   \vspace{12pt}
   \thispagestyle{zju}
 }
-\newcommand{\zjuUnnumberedPartTitle}[2]{
+\newcommand{\zjuUnnumberedPartTitle}[3][20pt]{
   \zjuClearPage
   \zjuFreezePageNumbers
-  \zjuFixedTOCEntry{#1}{#2}
-  {\noindent\bfseries\fontsize{16pt}{20pt}\selectfont #1\par}
+  \zjuFixedTOCEntry{#2}{#3}
+  \vspace*{\dimexpr#1-26pt\relax}
+  {\centering\bfseries\fontsize{16pt}{20pt}\selectfont #2\par}
   \vspace{12pt}
   \thispagestyle{empty}
 }

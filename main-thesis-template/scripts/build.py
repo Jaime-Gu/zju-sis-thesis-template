@@ -321,7 +321,7 @@ def build(check_only=False):
         appendix = "\\zjuUnnumberedPartTitle{Apéndice}{appendix}\n\\input{build/appendix.tex}"
     author = ""
     if sections["author"].strip():
-        author = "\\zjuUnnumberedPartTitle{Breve resumen del autor}{author}\n\\input{build/author.tex}"
+        author = "\\zjuUnnumberedPartTitle[26pt]{Breve resumen del autor}{author}\n\\vspace{-14pt}\n\\begingroup\\setlength{\\parindent}{0pt}\n\\input{build/author.tex}\n\\endgroup"
     original_pdf = ROOT / "外文原文.pdf"
     if original_pdf.exists():
         original = "\\clearpage\\includepdf[pages=-,pagecommand={\\thispagestyle{empty}}]{外文原文.pdf}"
