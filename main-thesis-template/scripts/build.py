@@ -109,6 +109,18 @@ def latex_escape(value):
     return "".join(replacements.get(char, char) for char in value)
 
 
+def latex_info_escape(key, value):
+    escaped = latex_escape(value)
+    if key in {"姓名", "指导教师", "年级与专业"}:
+        width = "0.5em" if key == "年级与专业" else "1em"
+        escaped = re.sub(
+            r"(?<=[\u3400-\u9fff]) +(?=[\u3400-\u9fff])",
+            rf"\\hspace{{{width}}}",
+            escaped,
+        )
+    return escaped
+
+
 def latex_raw_block(content):
     return "```{=latex}\n" + content + "\n```"
 
@@ -316,7 +328,7 @@ def build(check_only=False):
     else:
         original = "\\zjuSuppressNextSectionBreaktrue\n\\input{build/original.tex}"
 
-    replacements = {token: latex_escape(info[key]) for key, token in INFO_KEYS.items()}
+    replacements = {token: latex_info_escape(key, info[key]) for key, token in INFO_KEYS.items()}
     replacements.update({
         "SECRECY_MARK": r"$\boxtimes$" if info["论文性质"] == "涉密" else r"$\square$",
         "PUBLIC_MARK": r"$\boxtimes$" if info["论文性质"] == "公开" else r"$\square$",

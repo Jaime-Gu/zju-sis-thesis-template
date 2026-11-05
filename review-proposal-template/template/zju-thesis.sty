@@ -280,11 +280,11 @@
   {\bfseries\fontsize{18pt}{27pt}\selectfont
    #1\if\relax\detokenize{#2}\relax\else\dotfill #2\fi\par}
 }
-\newcommand{\zjuCoverLabel}[1]{{\zjuhei\bfseries\fontsize{16pt}{18pt}\selectfont #1}}
-\newcommand{\zjuReviewCoverLabel}[1]{{\bfseries\fontsize{16pt}{18pt}\selectfont #1}}
+\newcommand{\zjuCoverLabel}[1]{{\zjuhei\bfseries\fontsize{16pt}{18pt}\selectfont\makebox[3.05cm][l]{#1}}}
+\newcommand{\zjuReviewCoverLabel}[1]{{\zjuhei\bfseries\fontsize{16pt}{18pt}\selectfont\makebox[3.05cm][l]{#1}}}
 \newcommand{\zjuCoverValue}{\bfseries\fontsize{16pt}{18pt}\selectfont}
-\newcommand{\zjuCoverRow}[2]{\rule[-0.45cm]{0pt}{1.5cm}\zjuCoverLabel{#1} & {\zjuCoverValue\centering #2\par} \\ \hline}
-\newcommand{\zjuReviewCoverRow}[2]{\rule[-0.45cm]{0pt}{1.5cm}\zjuReviewCoverLabel{#1} & {\zjuCoverValue\centering #2\par} \\ \hline}
+\newcommand{\zjuCoverRow}[2]{\rule[-0.45cm]{0pt}{1.5cm}\zjuCoverLabel{#1} & {\zjuCoverValue\centering #2\par} \\ \cline{2-2}}
+\newcommand{\zjuReviewCoverRow}[2]{\rule[-0.45cm]{0pt}{1.5cm}\zjuReviewCoverLabel{#1} & {\zjuCoverValue\centering #2\par} \\ \cline{2-2}}
 
 \newcommand{\zjuMainCover}{
   \thispagestyle{empty}
@@ -297,20 +297,19 @@
     \vspace{0.5cm}
     \includegraphics[width=3cm]{template/assets/zju-seal.png}\par
   \end{center}
-  \vspace{0.4cm}
-  \begin{center}
-  \renewcommand{\arraystretch}{1}
-  \setlength{\tabcolsep}{4pt}
-  \begin{tabularx}{14.25cm}{>{\centering\arraybackslash}p{3.5cm}>{\centering\arraybackslash}X}
-    \zjuCoverRow{题　　目}{\zjuTitleEs}
+  \vspace{0.85cm}
+  \noindent
+  \setlength{\tabcolsep}{2pt}
+  \hspace*{-4.3pt}\makebox[0pt][l]{%
+  \begin{tabularx}{14.925cm}{>{\raggedright\arraybackslash}p{3.2cm}>{\centering\arraybackslash}X}
+    \zjuCoverRow{题\hfill 目}{\zjuTitleEs}
     \zjuCoverRow{}{\zjuTitleZh}
-    \zjuCoverRow{姓\ 名\ 与\ 学\ 号}{\zjuAuthor\quad\zjuStudentId}
-    \zjuCoverRow{指\ 导\ 教\ 师}{\zjuAdvisor}
-    \zjuCoverRow{年\ 级\ 与\ 专\ 业}{\zjuGradeMajor}
-    \zjuCoverRow{所\ 在\ 学\ 院}{\zjuCollege}
-    \zjuCoverRow{提\ 交\ 日\ 期}{\zjuSubmitDate}
-  \end{tabularx}
-  \end{center}
+    \zjuCoverRow{姓\hfill 名\hfill 与\hfill 学\hfill 号}{\zjuAuthor\quad\zjuStudentId}
+    \zjuCoverRow{指\hfill 导\hfill 教\hfill 师}{\zjuAdvisor}
+    \zjuCoverRow{年\hfill 级\hfill 与\hfill 专\hfill 业}{\zjuGradeMajor}
+    \zjuCoverRow{所\hfill 在\hfill 学\hfill 院}{\zjuCollege}
+    \zjuCoverRow{提\hfill 交\hfill 日\hfill 期}{\zjuSubmitDate}
+  \end{tabularx}}
   \clearpage
 }
 
@@ -327,15 +326,16 @@
     \vspace{0.45cm}
     \includegraphics[width=3cm]{template/assets/zju-seal.png}\par
   \end{center}
-  \vspace{1.1cm}
-  \begin{center}
-  \begin{tabularx}{14.25cm}{>{\centering\arraybackslash}p{3.5cm}>{\centering\arraybackslash}X}
-    \zjuReviewCoverRow{姓\ 名\ 与\ 学\ 号}{\zjuAuthor\quad\zjuStudentId}
-    \zjuReviewCoverRow{指\ 导\ 教\ 师}{\zjuAdvisor}
-    \zjuReviewCoverRow{年\ 级\ 与\ 专\ 业}{\zjuGradeMajor}
-    \zjuReviewCoverRow{所\ 在\ 学\ 院}{\zjuCollege}
-  \end{tabularx}
-  \end{center}
+  \vspace{1.55cm}
+  \noindent
+  \setlength{\tabcolsep}{2pt}
+  \hspace*{-4.3pt}\makebox[0pt][l]{%
+  \begin{tabularx}{14.925cm}{>{\raggedright\arraybackslash}p{3.2cm}>{\centering\arraybackslash}X}
+    \zjuReviewCoverRow{姓\hfill 名\hfill 与\hfill 学\hfill 号}{\zjuAuthor\quad\zjuStudentId}
+    \zjuReviewCoverRow{指\hfill 导\hfill 教\hfill 师}{\zjuAdvisor}
+    \zjuReviewCoverRow{年\hfill 级\hfill 与\hfill 专\hfill 业}{\zjuGradeMajor}
+    \zjuReviewCoverRow{所\hfill 在\hfill 学\hfill 院}{\zjuCollege}
+  \end{tabularx}}
   \clearpage
 }
 
