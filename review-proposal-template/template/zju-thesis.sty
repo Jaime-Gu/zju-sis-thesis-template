@@ -84,7 +84,7 @@
   left=3.17cm,
   right=3.17cm,
   headheight=12pt,
-  headsep=1.15cm,
+  headsep=0pt,
   footskip=1.1cm
 }
 
@@ -112,9 +112,9 @@
   \fi
 }
 \titleformat{\section}
-  {\bfseries\raggedright\fontsize{16pt}{20pt}\selectfont}
+  {\vspace*{-14pt}\bfseries\raggedright\fontsize{16pt}{20pt}\selectfont}
   {\thesection}{0.5em}{}
-\titlespacing*{\section}{0pt}{0pt}{12pt}
+\titlespacing*{\section}{0pt}{12pt}{6pt}
 \titleformat{\subsection}
   {\bfseries\raggedright\fontsize{15pt}{19pt}\selectfont}
   {\thesubsection}{0.5em}{}
@@ -216,7 +216,7 @@
   {\endlist}
 
 \newenvironment{zjureferences}
-  {\begingroup\linespread{1}\zjusong\fontsize{10.5pt}{12pt}\selectfont\setlength{\parskip}{0pt}\setlist[enumerate,1]{label={[\arabic{enumi}]},leftmargin=3em,labelsep=0.5em,itemsep=0pt,parsep=0pt,topsep=0pt,partopsep=0pt}}
+  {\begingroup\linespread{1}\zjusong\fontsize{10.5pt}{12pt}\selectfont\setlength{\parskip}{0pt}\setlist[enumerate,1]{label={[\arabic{enumi}]},leftmargin=2em,labelwidth=1.5em,labelsep=0.5em,align=left,itemsep=0pt,parsep=0pt,topsep=0pt,partopsep=0pt}}
   {\endgroup}
 
 \newcommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
@@ -260,6 +260,7 @@
   \phantomsection
   \label{#2}
   \addcontentsline{toc}{section}{#1}
+  \ifzjuFrontMatter\else\vspace*{-8pt}\fi
   {\centering\bfseries\fontsize{16pt}{20pt}\selectfont #1\par}
   \vspace{12pt}
   \ifzjuFrontMatter\thispagestyle{zjufront}\else\thispagestyle{zju}\fi
@@ -273,6 +274,7 @@
   \thispagestyle{empty}
 }
 \newcommand{\zjuArticleTitle}[1]{
+  \vspace{17pt}
   {\centering\bfseries\fontsize{14pt}{20pt}\selectfont #1\par}
   \vspace{6pt}
 }

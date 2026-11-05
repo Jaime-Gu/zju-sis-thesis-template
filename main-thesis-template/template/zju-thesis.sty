@@ -84,7 +84,7 @@
   left=3.17cm,
   right=3.17cm,
   headheight=12pt,
-  headsep=1.15cm,
+  headsep=0pt,
   footskip=1.1cm
 }
 
@@ -112,9 +112,9 @@
   \fi
 }
 \titleformat{\section}
-  {\bfseries\raggedright\fontsize{16pt}{20pt}\selectfont}
+  {\vspace*{-8pt}\bfseries\raggedright\fontsize{16pt}{20pt}\selectfont}
   {\thesection}{0.5em}{}
-\titlespacing*{\section}{0pt}{0pt}{12pt}
+\titlespacing*{\section}{0pt}{12pt}{6pt}
 \titleformat{\subsection}
   {\bfseries\raggedright\fontsize{15pt}{19pt}\selectfont}
   {\thesubsection}{0.5em}{}
@@ -216,7 +216,7 @@
   {\endlist}
 
 \newenvironment{zjureferences}
-  {\begingroup\linespread{1}\zjusong\fontsize{10.5pt}{12pt}\selectfont\setlength{\parskip}{0pt}\setlist[enumerate,1]{label={[\arabic{enumi}]},leftmargin=3em,labelsep=0.5em,itemsep=0pt,parsep=0pt,topsep=0pt,partopsep=0pt}}
+  {\begingroup\linespread{1}\zjusong\fontsize{10.5pt}{12pt}\selectfont\setlength{\parskip}{0pt}\setlist[enumerate,1]{label={[\arabic{enumi}]},leftmargin=2em,labelwidth=1.5em,labelsep=0.5em,align=left,itemsep=0pt,parsep=0pt,topsep=0pt,partopsep=0pt}}
   {\endgroup}
 
 \newcommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
@@ -260,6 +260,7 @@
   \phantomsection
   \label{#2}
   \addcontentsline{toc}{section}{#1}
+  \ifzjuFrontMatter\else\vspace*{-8pt}\fi
   {\centering\bfseries\fontsize{16pt}{20pt}\selectfont #1\par}
   \vspace{12pt}
   \ifzjuFrontMatter\thispagestyle{zjufront}\else\thispagestyle{zju}\fi
@@ -274,6 +275,7 @@
   \thispagestyle{empty}
 }
 \newcommand{\zjuArticleTitle}[1]{
+  \vspace{17pt}
   {\centering\bfseries\fontsize{14pt}{20pt}\selectfont #1\par}
   \vspace{6pt}
 }
@@ -285,7 +287,7 @@
   \thispagestyle{zju}
 }
 \newcommand{\zjuTotalLine}[2]{
-  \par\noindent
+  \par\noindent\hspace*{-3pt}
   {\bfseries\fontsize{18pt}{27pt}\selectfont
    #1\if\relax\detokenize{#2}\relax\else\dotfill #2\fi\par}
 }
@@ -350,10 +352,11 @@
 
 \newcommand{\zjuTotalContents}{
   \thispagestyle{empty}
+  \vspace*{-42pt}
   \begin{center}
     {\bfseries\fontsize{22pt}{30pt}\selectfont 总目录\par}
   \end{center}
-  \vspace{0.5cm}
+  \vspace{-0.27cm}
   \zjuTotalLine{（1）浙江大学本科生毕业论文（设计）承诺书}{}
   \zjuTotalLine{（2）致谢}{\pageref{acknowledgements}}
   \zjuTotalLine{（3）中西文摘要}{\pageref{abstract-es}}
@@ -363,12 +366,13 @@
 
 \newcommand{\zjuPromise}{
   \thispagestyle{empty}
+  \vspace*{-13.75pt}
   \begin{center}
     {\bfseries\fontsize{16pt}{22pt}\selectfont 浙江大学本科生毕业论文（设计）承诺书\par}
   \end{center}
-  \vspace{0.5cm}
+  \vspace{-16pt}
   \fontsize{14pt}{21pt}\selectfont
-  \begin{enumerate}[label=\arabic*.,leftmargin=2.5em,itemsep=6pt]
+  \begin{enumerate}[label=\arabic*.,leftmargin=2.5em,itemsep=0pt]
     \item 本人郑重地承诺所呈交的毕业论文（设计），是在指导教师的指导下严格按照学校和学院有关规定完成的。
     \item 本人在毕业论文（设计）中除了文中特别加以标注和致谢的地方外，论文中不包含其他人已经发表或撰写过的研究成果，也不包含为获得浙江大学或其他教育机构的学位或证书而使用过的材料。
     \item 与我一同工作的同志对本研究所做的任何贡献均已在论文中作了明确的说明并表示谢意。
@@ -376,9 +380,9 @@
     \item 若在本毕业论文（设计）中有侵犯任何方面知识产权的行为，由本人承担相应的法律责任。
     \item 本人完全了解浙江大学有权保留并向有关部门或机构送交本论文（设计）的复印件和磁盘，允许本论文（设计）被查阅和借阅。本人授权浙江大学可以将本论文（设计）的全部或部分内容编入有关数据库进行检索和传播，可以采用影印、缩印或扫描等复制手段保存、汇编本论文（设计）。
   \end{enumerate}
-  \vspace{1.2cm}
+  \vspace{-0.63cm}
   \noindent 作者签名：\underline{\hspace{4cm}}\hfill 导师签名：\underline{\hspace{4cm}}\par
-  \vspace{0.8cm}
+  \vspace{0.02cm}
   \noindent 签字日期：\quad 年\quad 月\quad 日\hfill 签字日期：\quad 年\quad 月\quad 日\par
   \normalsize
   \clearpage
